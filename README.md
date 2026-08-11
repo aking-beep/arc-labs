@@ -5,7 +5,8 @@
 A free, open library of production-ready **agent skills**. Each package is a directory with a `SKILL.md` that follows the [Agent Skills specification](https://agentskills.io/specification) — YAML frontmatter (`name`, `description`) plus steps and guardrails you can drop into Claude, Cursor, or any compatible runtime.
 
 Repo: https://github.com/aking-beep/arc-skills
-Live: https://arcskills.arctransformationgrouplab.dev
+Live: https://arc-skills-phi.vercel.app  
+Custom domain (when DNS is attached): https://arcskills.arctransformationgrouplab.dev
 Labs: https://arc-website-pi-five.vercel.app/labs/arc-skills
 Drive home: `ARC Transformation/ARC Labs (Free)/arc-skills`
 
@@ -36,7 +37,7 @@ npm run catalog -- "review"
 
 ```bash
 mkdir -p ~/.cursor/skills/pr-review-summary
-curl -s "https://arcskills.arctransformationgrouplab.dev/api/catalog?slug=pr-review-summary&format=raw" \
+curl -s "https://arc-skills-phi.vercel.app/api/catalog?slug=pr-review-summary&format=raw" \
   > ~/.cursor/skills/pr-review-summary/SKILL.md
 ```
 

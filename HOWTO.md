@@ -4,7 +4,7 @@
 
 - Web: search or filter by category, open a skill, copy or download `SKILL.md`.
 - CLI: `npm run catalog`, `npm run catalog -- "<query>"`, `npm run catalog -- --json`.
-- API: `curl https://arcskills.arctransformationgrouplab.dev/api/catalog`.
+- API: `curl https://arc-skills-phi.vercel.app/api/catalog`.
 
 ## Apply a skill to your agent
 
