@@ -1,3 +1,4 @@
+import { GITHUB_REPO, SITE_LAB, SKILLS_UPDATED, SKILLS_VERSION } from "@/lib/version";
 import type { CatalogConfig } from "./types";
 
 export const CONFIG: CatalogConfig = {
@@ -8,9 +9,9 @@ export const CONFIG: CatalogConfig = {
   apiPath: "skills",
   tagline: "Open, copy-pasteable agent skills for real operator work.",
   description:
-    "A free, open library of production-ready agent skills — each one a self-contained SKILL.md with clear triggers, steps, and guardrails. Browse, copy, and drop them into Claude, Cursor, or any agent runtime. No account, no lock-in.",
-  repo: "https://github.com/aking-beep/arc-skills",
-  site: "https://arc-website-pi-five.vercel.app/labs/arc-skills",
-  updated: "2026-08-11",
-  version: "0.1.0",
+    "A free, open library of production-ready agent skills. Each one is a self-contained SKILL.md package — name, description, steps, and guardrails — written to drop into Claude, Cursor, or any Agent Skills runtime. No account, no lock-in.",
+  repo: GITHUB_REPO,
+  site: SITE_LAB,
+  updated: SKILLS_UPDATED,
+  version: SKILLS_VERSION,
 };

@@ -1,5 +1,6 @@
 #!/usr/bin/env tsx
-import { CONFIG, ITEMS, allCategories, searchItems } from "../lib/catalog";
+import { CONFIG } from "../lib/catalog";
+import { allCategories, getSkills, searchSkills, toCard } from "../lib/skills/load";
 
 function usage(): never {
   console.error(`Usage:
@@ -23,15 +24,16 @@ for (const a of args) {
   else query = a;
 }
 
-const results = searchItems(query, category);
+const results = searchSkills(query, category);
+const cards = results.map(toCard);
 
 if (asJson) {
-  console.log(JSON.stringify(results, null, 2));
+  console.log(JSON.stringify(cards, null, 2));
 } else {
-  console.log(`${CONFIG.title} — ${results.length}/${ITEMS.length} ${CONFIG.nounPlural}`);
+  console.log(`${CONFIG.title} — ${results.length}/${getSkills().length} ${CONFIG.nounPlural}`);
   console.log(`Categories: ${allCategories().join(", ")}\n`);
-  for (const r of results) {
-    console.log(`• ${r.title}  [${r.category}${r.difficulty ? " · " + r.difficulty : ""}]`);
+  for (const r of cards) {
+    console.log(`• ${r.title}  [${r.category} · ${r.difficulty}]`);
     console.log(`  ${r.summary}`);
     console.log(`  /${r.slug}  tags: ${r.tags.join(", ")}\n`);
   }

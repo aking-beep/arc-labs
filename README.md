@@ -1,43 +1,70 @@
 # ARC Skills
 
-**A free, open library of production-ready agent skills.** Each entry is a self-contained `SKILL.md` — a clear trigger, a step list, and guardrails — written to drop straight into Claude, Cursor, or any agent runtime. No account, no lock-in.
+**ARC Labs 0.2** — Free · Open Source · Community Project
 
-Part of [ARC Labs](https://arc-website-pi-five.vercel.app/labs) · Live: https://arcskills.arctransformationgrouplab.dev
+A free, open library of production-ready **agent skills**. Each package is a directory with a `SKILL.md` that follows the [Agent Skills specification](https://agentskills.io/specification) — YAML frontmatter (`name`, `description`) plus steps and guardrails you can drop into Claude, Cursor, or any compatible runtime.
+
+Repo: https://github.com/aking-beep/arc-skills
+Live: https://arcskills.arctransformationgrouplab.dev
+Labs: https://arc-website-pi-five.vercel.app/labs/arc-skills
+Drive home: `ARC Transformation/ARC Labs (Free)/arc-skills`
+
+Sister tools: [MCP Conformance Scanner](https://github.com/aking-beep/mcp-conformance-scanner) · [Prompt Reviewer](https://github.com/aking-beep/prompt-reviewer)
+
+---
 
 ## What's inside
-- **Browsable catalog** — search and filter skills by category and tag.
-- **Per-skill detail pages** — statically generated, each linking back to its source file.
-- **Read-only JSON API** — `GET /api/catalog`, no key required.
-- **Open content repo** — every skill also lives as Markdown under `content/`.
-- **CLI** — `npm run catalog` to search from the terminal.
+
+- **20 operator skills** across Engineering, Operations, Productivity, Support, Quality, Growth, Architecture, Data, DevOps, Security, Delivery, and AI — drawn from ARC Labs tools and the same operating procedures ARC uses on delivery work (generalized, no client data).
+- **Browsable catalog** — search and filter by category and tag.
+- **Copy / download** `SKILL.md` with Cursor and Claude install paths.
+- **Read-only API** — `GET /api/catalog`, plus `?format=raw` for the markdown.
+- **CLI** — `npm run catalog` and `npm run validate`.
+
+No account required to browse or copy. Optional email capture is only for update notifications.
 
 ## Quick start
+
 ```bash
 npm install
+npm run validate
 npm run dev          # http://localhost:3000
-npm run typecheck
-npm run build
-npm run catalog -- "review"   # search from the CLI
+npm run catalog -- "review"
 ```
+
+### Install a skill in Cursor
+
+```bash
+mkdir -p ~/.cursor/skills/pr-review-summary
+curl -s "https://arcskills.arctransformationgrouplab.dev/api/catalog?slug=pr-review-summary&format=raw" \
+  > ~/.cursor/skills/pr-review-summary/SKILL.md
+```
+
+Project-scoped: `.cursor/skills/<slug>/SKILL.md`. Claude Code: `.claude/skills/<slug>/SKILL.md`.
 
 ## API
+
 ```
-GET /api/catalog                      # list all
-GET /api/catalog?category=Engineering # filter by category
-GET /api/catalog?slug=<slug>          # a single skill
+GET /api/catalog
+GET /api/catalog?category=Engineering
+GET /api/catalog?q=incident
+GET /api/catalog?slug=pr-review-summary
+GET /api/catalog?slug=pr-review-summary&format=raw
 ```
 
-## Using a skill
-1. Open an entry and read **When to use** and **Guardrails** first.
-2. Copy the section bodies into your system prompt, skill file, or tool description.
-3. Keep the guardrails verbatim — they prevent the common failure modes.
-4. Adapt the trigger phrases to how your users actually ask.
+## Layout
 
-## Contributing
-Add an entry to `lib/catalog/data.ts`, mirror it as Markdown under `content/`, and open a PR. See `HOWTO.md` for the full walkthrough.
+```
+skills/<slug>/SKILL.md   # source of truth (Agent Skills spec)
+app/                     # Next.js catalog UI
+lib/skills/              # parser, loader, types
+cli/                     # catalog + validate + snapshot
+```
 
-## Tech
-Next.js 15 (App Router) · TypeScript (strict) · Tailwind CSS. Deploys to Vercel. MIT licensed.
+## Deploy
+
+Import the GitHub repo in Vercel. Framework: Next.js. No env vars required for the catalog. Optional: `EMAIL_CAPTURE_WEBHOOK_URL` / `LEAD_WEBHOOK_URL`, Upstash for rate limits.
 
 ## License
+
 MIT © 2026 ARC Transformation Group

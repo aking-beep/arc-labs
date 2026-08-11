@@ -1,20 +1,25 @@
 # ARC Skills — Roadmap
 
+## Shipped (0.2)
+
+- Agent Skills `SKILL.md` packages as the source of truth.
+- 20 operator skills from ARC Labs tools and generalized delivery SOPs.
+- Searchable catalog, copy/download, install paths for Cursor and Claude.
+- JSON + raw markdown API, CLI, spec validator in CI.
+- Contribution guide and PR template.
+
 ## Shipped (0.1)
-- Seed catalog with vetted, copy-pasteable skills.
-- Searchable, filterable browse UI.
-- Read-only JSON API + open content repo.
-- Per-skill detail pages with source links.
-- CLI search (`npm run catalog`).
+
+- Seed catalog, browse UI, JSON API, CLI search.
 
 ## Next
-- Community contribution guide + PR template.
-- Copy / download buttons per skill.
-- "Open in Claude / Cursor" deep links.
+
+- "Open in Cursor / Claude" deep links.
+- Bundles by role (engineering, ops, growth).
 
 ## Later
+
 - Versioned skills + per-skill changelog.
 - Ratings and usage signals.
-- Skill bundles by role (engineering, support, ops).
 
 Have a request? Open an issue on GitHub.

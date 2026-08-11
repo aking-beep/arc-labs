@@ -1,8 +1,5 @@
 import React from "react";
 
-// Tiny zero-dependency markdown-lite renderer: headings, lists, fenced code,
-// paragraphs, inline `code` and **bold**. Enough for catalog content.
-
 function renderInline(text: string, keyBase: string): React.ReactNode[] {
   const nodes: React.ReactNode[] = [];
   const regex = /(\*\*[^*]+\*\*|`[^`]+`)/g;
@@ -32,6 +29,24 @@ function renderInline(text: string, keyBase: string): React.ReactNode[] {
   return nodes;
 }
 
+function isTableRow(line: string): boolean {
+  const t = line.trim();
+  return t.startsWith("|") && t.endsWith("|");
+}
+
+function isTableDivider(line: string): boolean {
+  return /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line.trim());
+}
+
+function splitRow(line: string): string[] {
+  return line
+    .trim()
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((c) => c.trim());
+}
+
 export function Markdown({ body }: { body: string }) {
   const lines = body.replace(/\r/g, "").split("\n");
   const blocks: React.ReactNode[] = [];
@@ -46,7 +61,6 @@ export function Markdown({ body }: { body: string }) {
       continue;
     }
 
-    // Fenced code block
     if (line.trim().startsWith("```")) {
       const code: string[] = [];
       i++;
@@ -54,7 +68,7 @@ export function Markdown({ body }: { body: string }) {
         code.push(lines[i]);
         i++;
       }
-      i++; // skip closing fence
+      i++;
       blocks.push(
         <pre key={key++} className="rounded-xl bg-bg border border-line p-3 text-xs font-mono text-ink overflow-x-auto whitespace-pre">
           {code.join("\n")}
@@ -63,19 +77,85 @@ export function Markdown({ body }: { body: string }) {
       continue;
     }
 
-    // Headings
+    if (line.startsWith("> ")) {
+      const quote: string[] = [];
+      while (i < lines.length && lines[i].startsWith(">")) {
+        quote.push(lines[i].replace(/^>\s?/, ""));
+        i++;
+      }
+      blocks.push(
+        <blockquote key={key++} className="border-l-2 border-brand/50 pl-3 text-sub italic">
+          {renderInline(quote.join(" "), `q-${key}`)}
+        </blockquote>,
+      );
+      continue;
+    }
+
+    if (isTableRow(line) && i + 1 < lines.length && isTableDivider(lines[i + 1])) {
+      const header = splitRow(line);
+      i += 2;
+      const rows: string[][] = [];
+      while (i < lines.length && isTableRow(lines[i])) {
+        rows.push(splitRow(lines[i]));
+        i++;
+      }
+      blocks.push(
+        <div key={key++} className="overflow-x-auto">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr>
+                {header.map((h, n) => (
+                  <th key={n} className="text-left text-ink font-semibold border-b border-line py-2 pr-3">
+                    {renderInline(h, `th-${key}-${n}`)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, r) => (
+                <tr key={r} className="border-b border-line/60">
+                  {row.map((c, n) => (
+                    <td key={n} className="py-2 pr-3 align-top">
+                      {renderInline(c, `td-${key}-${r}-${n}`)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>,
+      );
+      continue;
+    }
+
     if (line.startsWith("### ")) {
-      blocks.push(<h3 key={key++} className="text-ink font-semibold text-sm mt-4">{renderInline(line.slice(4), `h3-${key}`)}</h3>);
+      blocks.push(
+        <h3 key={key++} className="text-ink font-semibold text-sm mt-4">
+          {renderInline(line.slice(4), `h3-${key}`)}
+        </h3>,
+      );
       i++;
       continue;
     }
     if (line.startsWith("## ")) {
-      blocks.push(<h2 key={key++} className="text-ink font-semibold text-base mt-5">{renderInline(line.slice(3), `h2-${key}`)}</h2>);
+      blocks.push(
+        <h2 key={key++} className="text-ink font-semibold text-base mt-5">
+          {renderInline(line.slice(3), `h2-${key}`)}
+        </h2>,
+      );
+      i++;
+      continue;
+    }
+    if (line.startsWith("# ")) {
+      blocks.push(
+        <h1 key={key++} className="text-ink font-bold text-lg mt-2">
+          {renderInline(line.slice(2), `h1-${key}`)}
+        </h1>,
+      );
       i++;
       continue;
     }
 
-    // Unordered list
     if (/^[-*] /.test(line)) {
       const items: string[] = [];
       while (i < lines.length && /^[-*] /.test(lines[i])) {
@@ -92,7 +172,6 @@ export function Markdown({ body }: { body: string }) {
       continue;
     }
 
-    // Ordered list
     if (/^\d+\.\s/.test(line)) {
       const items: string[] = [];
       while (i < lines.length && /^\d+\.\s/.test(lines[i])) {
@@ -109,9 +188,16 @@ export function Markdown({ body }: { body: string }) {
       continue;
     }
 
-    // Paragraph (gather until blank)
     const para: string[] = [];
-    while (i < lines.length && lines[i].trim() !== "" && !/^([-*]|\d+\.)\s/.test(lines[i]) && !lines[i].startsWith("#") && !lines[i].trim().startsWith("```")) {
+    while (
+      i < lines.length &&
+      lines[i].trim() !== "" &&
+      !/^([-*]|\d+\.)\s/.test(lines[i]) &&
+      !lines[i].startsWith("#") &&
+      !lines[i].trim().startsWith("```") &&
+      !lines[i].startsWith(">") &&
+      !(isTableRow(lines[i]) && i + 1 < lines.length && isTableDivider(lines[i + 1]))
+    ) {
       para.push(lines[i]);
       i++;
     }

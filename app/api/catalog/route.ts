@@ -1,32 +1,47 @@
 import { NextResponse } from "next/server";
-import { CONFIG, ITEMS, getItem } from "@/lib/catalog";
+import { CONFIG, allCategories, getSkill, getSkills, searchSkills, toCard } from "@/lib/catalog";
 
 export const runtime = "nodejs";
 
-// Public read-only catalog API. `?slug=` returns a single item.
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const slug = searchParams.get("slug");
+  const format = searchParams.get("format");
+
   if (slug) {
-    const item = getItem(slug);
-    if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
-    return NextResponse.json({ item });
+    const skill = getSkill(slug);
+    if (!skill) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (format === "raw" || format === "md") {
+      return new NextResponse(skill.raw, {
+        status: 200,
+        headers: {
+          "content-type": "text/markdown; charset=utf-8",
+          "content-disposition": `inline; filename="SKILL.md"`,
+        },
+      });
+    }
+    return NextResponse.json({
+      item: {
+        ...toCard(skill),
+        license: skill.license,
+        compatibility: skill.compatibility,
+        source: skill.source,
+        extras: skill.extras,
+        body: skill.body,
+      },
+    });
   }
+
   const category = searchParams.get("category");
-  const items = category ? ITEMS.filter((i) => i.category === category) : ITEMS;
+  const q = searchParams.get("q") ?? "";
+  const items = searchSkills(q, category).map(toCard);
   return NextResponse.json({
     product: CONFIG.product,
     version: CONFIG.version,
+    spec: "https://agentskills.io/specification",
     count: items.length,
-    items: items.map((i) => ({
-      slug: i.slug,
-      title: i.title,
-      category: i.category,
-      summary: i.summary,
-      tags: i.tags,
-      difficulty: i.difficulty,
-      updated: i.updated,
-      source: i.source,
-    })),
+    total: getSkills().length,
+    categories: allCategories(),
+    items,
   });
 }

@@ -3,24 +3,27 @@
 Context for AI assistants working in this repo.
 
 ## What this is
-An open catalog of agent skills. Every surface (home, detail pages, API, CLI) is generated from a single data source: `lib/catalog/data.ts`. There is **no access gate** — the catalog is free and browsable without an account.
+
+An open catalog of Agent Skills. **Source of truth is `skills/<slug>/SKILL.md`**, not a TypeScript array. The UI, API, and CLI all load from that directory. There is **no access gate** — the catalog is free and browsable without an account.
 
 ## Architecture
-- `lib/catalog/config.ts` — product identity (title, noun, repo, site, version).
-- `lib/catalog/data.ts` — the `ITEMS: CatalogItem[]` array. This is the source of truth.
-- `lib/catalog/index.ts` — helpers: `getItem`, `allCategories`, `allTags`, `searchItems`.
-- `lib/catalog/types.ts` — shared `CatalogItem` / `CatalogConfig` types.
-- `app/page.tsx` — server home: hero + `<Catalog>` + `<Subscribe>`.
-- `app/[slug]/page.tsx` — static detail pages (`dynamicParams = false`, `generateStaticParams`).
-- `app/api/catalog/route.ts` — read-only JSON API.
-- `components/Markdown.tsx` — zero-dependency markdown-lite renderer.
-- `content/` — human-readable mirror of each skill.
+
+- `skills/` — one directory per skill; `name` in frontmatter must match the directory.
+- `lib/skills/parse.ts` — YAML frontmatter + spec validation.
+- `lib/skills/load.ts` — filesystem loader (snapshot fallback for serverless).
+- `lib/catalog/config.ts` — product identity.
+- `app/page.tsx` — hero + `<Catalog>` + optional subscribe.
+- `app/[slug]/page.tsx` — static detail pages + copy/download.
+- `app/api/catalog/route.ts` — JSON or raw markdown.
+- `cli/validate.ts` — CI gate (`## Guardrails` required).
 
 ## Conventions
-- Adding a skill = one `CatalogItem` in `data.ts` + one mirror file in `content/`.
-- Keep `sections` to: When to use, What it does, Steps, Guardrails.
-- Slugs are kebab-case and unique; they become the URL and static route.
-- No new runtime dependencies without a strong reason — the stack is deliberately minimal.
+
+- Follow https://agentskills.io/specification (`name`, `description` constraints).
+- `metadata` keys are strings; `tags` is comma-separated; `difficulty` is starter | intermediate | advanced.
+- Do not publish client names, private paths, or secrets.
+- Generalized ARC operating procedures are welcome; internal routing and Drive paths are not.
 
 ## Checks
-`npm run typecheck` and `npm run build` must pass. CI runs both on every PR.
+
+`npm run validate`, `npm run typecheck`, and `npm run build` must pass.
