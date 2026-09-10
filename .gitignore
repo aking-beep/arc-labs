@@ -1,0 +1,18 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Node (if you add tooling later)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Env / secrets
+.env
+.env.*
+
+# Build output
+dist/
+build/
