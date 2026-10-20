@@ -1,0 +1,106 @@
+# Authoritative schema for ARC Labs incubator records.
+#
+# A record is a markdown file with YAML front-matter. The front-matter is validated
+# against this file by `tools/labs.py validate`, which runs in CI.
+#
+# Prose lives in the markdown body; structured, checkable commitments live in the
+# front-matter. If a field can be checked by a machine, it belongs here.
+
+id_pattern: '^exp-[0-9]{4}-[0-9]{4}-[a-z0-9][a-z0-9-]*$'
+
+domains:
+  - ai
+  - human-performance
+  - travel
+  - gaming
+  - emerging-tech
+
+# stage -> the directory its record must live in.
+stages:
+  idea:       incubator/ideas
+  experiment: incubator/validating
+  prototype:  incubator/validating
+  validating: incubator/validating
+  building:   incubator/building
+  graduated:  incubator/graduated
+  killed:     incubator/archive
+
+# Stages with no further transitions. Require a dated decision.
+terminal_stages:
+  - graduated
+  - killed
+
+# "In flight": owes an answer on a date. Non-terminal, and not a parked idea.
+# These require both `review_by` and `timebox_days`. Ideas are governed instead by
+# `limits.idea_shelf_life_days` and the monthly portfolio review.
+in_flight_stages:
+  - experiment
+  - prototype
+  - validating
+  - building
+
+# Stages that must carry a written kill condition.
+kill_condition_stages:
+  - experiment
+  - prototype
+  - validating
+
+decisions:
+  - pending
+  - kill
+  - iterate
+  - incubate
+  - graduate
+
+# decision -> the stage the record must be in once that decision is recorded.
+decision_requires_stage:
+  kill:      [killed]
+  graduate:  [graduated]
+  incubate:  [building, graduated, killed]
+
+evidence_types:
+  - behavioural
+  - qualitative
+  - economic
+  - technical
+
+# At least one evidence signal must be of one of these types.
+# Interest is not demand; people are kind in interviews and honest in behaviour.
+hard_evidence_types:
+  - behavioural
+  - economic
+
+fields:
+  id:            {type: str,  required: always}
+  title:         {type: str,  required: always}
+  domain:        {type: str,  required: always, enum: domains}
+  stage:         {type: str,  required: always, enum: stages}
+  owner:         {type: str,  required: always}
+  opened:        {type: date, required: always}
+  decision:      {type: str,  required: always, enum: decisions}
+
+  hypothesis:    {type: str,  required: always, min_words: 8}
+  human_problem: {type: str,  required: always, min_words: 8}
+  experiment:    {type: str,  required: always, min_words: 8}
+  evidence:      {type: list, required: always, min_items: 1}
+
+  review_by:     {type: date, required: in_flight}
+  timebox_days:  {type: int,  required: in_flight}
+  kill_condition: {type: str, required: kill_condition_stages, min_words: 5}
+
+  decided_on:    {type: date, required: decided}
+  rationale:     {type: str,  required: decided, min_words: 5}
+  learned:       {type: str,  required: killed, min_words: 8}
+  graduated_to:  {type: str,  required: graduated}
+
+  iterations:    {type: int,  required: never, default: 0}
+  work:          {type: list, required: never}
+  example:       {type: bool, required: never, default: false}
+
+limits:
+  # A fourth iteration means the hypothesis is not testable at this scale.
+  max_iterations: 3
+  # More than this in flight for one owner and all of them stall.
+  max_in_flight_per_owner: 3
+  # An idea does not improve by waiting.
+  idea_shelf_life_days: 90

@@ -1,0 +1,67 @@
+# GENERATED FILE - do not edit by hand.
+# Regenerate with: python3 tools/labs.py portfolio
+# Source of truth: incubator/*/*.md
+
+generated_by: tools/labs.py portfolio
+note: GENERATED FILE - do not edit. Source of truth is incubator/*/*.md
+counts:
+  idea: 1
+  experiment: 1
+  building: 1
+  graduated: 1
+  killed: 1
+experiments:
+- id: exp-2025-0007-climb-up
+  title: CLIMB UP — structured progression for self-coached climbers
+  domain: human-performance
+  stage: graduated
+  owner: aking
+  opened: '2025-03-11'
+  decision: graduate
+  record: incubator/graduated/exp-2025-0007-climb-up.md
+  decided_on: '2025-11-04'
+  graduated_to: aking-beep/climb-up
+  example: true
+- id: exp-2026-0001-pre-trip-cultural-briefing
+  title: Pre-trip cultural briefing generated from a calendar invite
+  domain: travel
+  stage: idea
+  owner: aking
+  opened: '2026-10-20'
+  decision: pending
+  record: incubator/ideas/exp-2026-0001-pre-trip-cultural-briefing.md
+  example: true
+- id: exp-2026-0002-question-framing-before-a-session
+  title: Question framing instead of instruction before a training session
+  domain: human-performance
+  stage: experiment
+  owner: aking
+  opened: '2026-10-18'
+  decision: pending
+  record: incubator/validating/exp-2026-0002-question-framing-before-a-session.md
+  review_by: '2026-10-27'
+  iterations: 1
+  example: true
+- id: exp-2026-0003-team-capability-mapping
+  title: Team-level AI capability mapping for engineering leaders
+  domain: ai
+  stage: building
+  owner: aking
+  opened: '2026-06-02'
+  decision: incubate
+  record: incubator/building/exp-2026-0003-team-capability-mapping.md
+  review_by: '2026-12-18'
+  decided_on: '2026-09-29'
+  iterations: 2
+  example: true
+- id: exp-2026-0004-streak-pressure-mechanic
+  title: Streak-pressure mechanic to raise session consistency
+  domain: gaming
+  stage: killed
+  owner: aking
+  opened: '2026-04-07'
+  decision: kill
+  record: incubator/archive/exp-2026-0004-streak-pressure-mechanic.md
+  review_by: '2026-04-21'
+  decided_on: '2026-04-21'
+  example: true

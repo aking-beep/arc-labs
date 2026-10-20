@@ -1,0 +1,104 @@
+name: Experiment proposal
+description: Propose a Labs experiment. Answer the five questions.
+title: "[experiment] "
+labels: ["experiment-proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        An issue is a convenient place to argue about an idea. It is **not** a record —
+        a record is a file in `incubator/ideas/`, created with:
+
+        ```bash
+        python3 tools/labs.py new "Your title" --domain <domain> --owner <you>
+        ```
+
+        Use this form when you want a second opinion before opening one. If you already
+        know it is worth doing, skip the issue and open the record.
+
+        The five questions, the gates, and the staleness rule are in
+        `docs/GRADUATION_CRITERIA.md`.
+
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Domain
+      options:
+        - ai
+        - human-performance
+        - travel
+        - gaming
+        - emerging-tech
+    validations:
+      required: true
+
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: 1. Hypothesis — what do we believe?
+      description: Falsifiable. "We believe X, for Y, because Z." If no evidence could prove it wrong, rewrite it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: human-problem
+    attributes:
+      label: 2. Human problem — whose capability or experience are we improving?
+      description: A named person or role, and what is hard for them today. Not a market, not a segment, not "users".
+    validations:
+      required: true
+
+  - type: textarea
+    id: experiment
+    attributes:
+      label: 3. Experiment — what is the smallest thing we can build?
+      description: Buildable by one person inside the timebox. If it needs auth, billing, and a mobile app, it is not the smallest thing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 4. Evidence — what tells us people actually want it?
+      description: Signals with targets set now, before the build. At least one must be behavioural or economic — interest is not demand.
+      placeholder: |
+        - signal: Returning users complete a second session within 7 days
+          type: behavioural
+          target: ">= 40% of first-session completers"
+    validations:
+      required: true
+
+  - type: input
+    id: timebox
+    attributes:
+      label: Timebox
+      description: Days. Declared before the first commit of work, not negotiated afterward.
+      placeholder: "7"
+    validations:
+      required: true
+
+  - type: textarea
+    id: kill-condition
+    attributes:
+      label: Kill condition
+      description: The result that would end this. Written now, before you are attached to it. The most-skipped field and the most useful one.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why-now
+    attributes:
+      label: Why now?
+      description: What changed that makes this worth trying today rather than last year? Required for emerging-tech; useful everywhere.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched `incubator/archive/` for this idea and it has not already been killed
+          required: true
+        - label: At least one of my evidence signals is behavioural or economic
+          required: true

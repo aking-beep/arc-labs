@@ -1,0 +1,109 @@
+# ARC portfolio registry — hand-maintained.
+#
+# `products:` is every product that was born in ARC Labs, wherever its code now lives.
+# `boundary:` is what is deliberately NOT Labs, recorded so the line stays legible.
+#
+# Companion file `experiments.yaml` is GENERATED from incubator records — do not edit it.
+#
+# A Labs record with `graduated_to: <repo>` must match a `repo` below, or
+# `tools/labs.py validate` fails: a graduation is not complete until the product
+# is registered here.
+#
+# relationship: labs-product | labs-technology | labs-commercial-experiment | not-labs
+# status:       shipped | building | exploring | planned
+# repo_confirmed: false means the repository location is a working assumption, not a fact.
+#                 Confirm it and set true; do not let a guess calcify into a record.
+
+products:
+  - name: CLIMB UP
+    repo: aking-beep/climb-up
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: true
+    labs_record: exp-2025-0007-climb-up
+    domain: human-performance
+    one_line: Structured progression for self-coached climbers.
+
+  - name: MIRROSU
+    repo: aking-beep/mirrosu
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: false
+    domain: human-performance
+    one_line: TODO — one sentence a stranger would understand.
+    notes: >
+      Labs product with its own repository. Backfill a record in incubator/graduated/
+      following the pattern in exp-2025-0007-climb-up.md.
+
+  - name: Steady Move
+    repo: aking-beep/steady-move
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: false
+    domain: human-performance
+    one_line: TODO — one sentence a stranger would understand.
+    notes: >
+      Labs product with its own repository. Record needs backfilling.
+
+  - name: ARC Travel
+    repo: aking-beep/arc-travel
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: false
+    domain: travel
+    one_line: TODO — one sentence a stranger would understand.
+    notes: >
+      Separate ARC Travel repository. Exact slug unconfirmed — confirm before anything
+      depends on it.
+
+  - name: Culture Context
+    repo: aking-beep/arc-travel
+    relationship: labs-technology
+    status: building
+    repo_confirmed: false
+    domain: travel
+    one_line: Cultural context as a capability, not a standalone product.
+    notes: >
+      Labs technology rather than a Labs product: expected to ship as an ARC Travel
+      component rather than independently. If it acquires its own users and roadmap it
+      becomes a product and needs its own repository and record.
+
+  - name: AI Fit
+    repo: aking-beep/ai-fit
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: false
+    domain: ai
+    one_line: TODO — one sentence a stranger would understand.
+    notes: >
+      Independent or existing repository — unconfirmed which. Resolve before AI Fit Teams
+      graduates, since that decision depends on this one.
+
+  - name: AI Fit Teams
+    repo: aking-beep/ai-fit
+    relationship: labs-commercial-experiment
+    status: building
+    repo_confirmed: false
+    domain: ai
+    labs_record: exp-2026-0003-team-capability-mapping
+    one_line: Team-level AI capability mapping for engineering leaders.
+    notes: >
+      Commercial experiment, expected to sit alongside AI Fit initially. Whether it
+      graduates inside the AI Fit repository or as its own product is an open Gate 5
+      question — see the record.
+
+# Explicitly outside ARC Labs. Here so the boundary is written down rather than assumed.
+boundary:
+  - name: ARC Control
+    repo: aking-beep/arc-control
+    relationship: not-labs
+    status: shipped
+    repo_confirmed: false
+    mandate: >
+      ARC Control makes autonomous technology trustworthy enough to operate in the real
+      world.
+    notes: >
+      Operational infrastructure with reliability obligations to real-world systems.
+      Nothing in Control is an experiment, and Control work does not enter the Labs
+      pipeline. If a question is "can we make this autonomous system trustworthy", it is
+      a Control question. See docs/LABS_CHARTER.md#what-labs-is-not.

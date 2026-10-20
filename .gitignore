@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+.next/
+dist/
+build/
+*.tsbuildinfo
+
+# Environment — experiment credentials never belong in history
+.env
+.env.*
+!.env.example
+
+# Experiment data. Participant data is deleted when the window closes
+# (docs/PRODUCT_PRINCIPLES.md #7) and is never committed in the meantime.
+**/data/raw/
+**/data/participants/
+*.sqlite
+*.sqlite3
+*.db
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

@@ -1,0 +1,78 @@
+# The nudge loop behind the staleness rule.
+#
+# docs/GRADUATION_CRITERIA.md makes an overdue record a CI failure, but CI only runs on a
+# push — and a stalled experiment is precisely the thing nobody is pushing to. This job
+# surfaces the board on a schedule instead, so the weekly review has an agenda whether or
+# not anyone has touched the repository.
+name: weekly-review
+
+on:
+  schedule:
+    # Mondays, 08:00 UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  board:
+    name: post the board
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: python -m pip install --quiet pyyaml
+
+      - name: Build the agenda
+        id: agenda
+        run: |
+          {
+            echo '## Weekly Labs review — '"$(date -u +%Y-%m-%d)"
+            echo
+            echo 'Fifteen minutes. Every overdue record gets a decision in the room.'
+            echo
+            echo '```'
+            python tools/labs.py status 2>&1 || true
+            echo '```'
+            echo
+            echo '### Checks'
+            echo
+            if python tools/labs.py validate > /tmp/validate.txt 2>&1; then
+              echo '- Pipeline validates clean.'
+            else
+              echo '- **Pipeline has errors:**'
+              echo
+              echo '```'
+              cat /tmp/validate.txt
+              echo '```'
+            fi
+            echo
+            echo '### Agenda'
+            echo
+            echo '1. Any record at or past `review_by` — decide now: kill, iterate, incubate, graduate.'
+            echo '2. Any record with 2+ iterations — is the hypothesis testable at this scale?'
+            echo '3. Any owner with more than three in flight — rebalance.'
+            echo '4. Ideas older than a quarter — promote or kill. Ideas do not improve by waiting.'
+            echo
+            echo '<sub>docs/EXPERIMENTATION.md#weekly-review-script</sub>'
+          } > agenda.md
+          cat agenda.md
+
+      - name: Open the review issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Weekly Labs review — $(date -u +%Y-%m-%d)" \
+            --body-file agenda.md \
+            --label "labs-review" || {
+              echo "::warning::could not open the review issue (is the 'labs-review' label created?)"
+              exit 0
+            }
