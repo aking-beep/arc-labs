@@ -13,6 +13,9 @@
 # relationship: labs-product | labs-technology | labs-commercial-experiment | labs-experiment | not-labs
 # status:       shipped | building | exploring | planned
 # line:         ai-developer-tools | travel-experiences | gaming-human-performance | experimental-learning
+# path:         where inside `repo` the code lives, when it is not the repository root.
+# target:       the final home under the 2026-10-21 consolidation plan, while a move is in
+#               progress. Remove it once the move is complete and the old location archived.
 # repo_confirmed: false means the repository location is a working assumption, not a fact.
 #                 Confirm it and set true; do not let a guess calcify into a record.
 #
@@ -42,6 +45,7 @@ products:
     repo_confirmed: true
     line: ai-developer-tools
     domain: ai
+    target: aking-beep/aifit-engine (apps/teams)
     labs_record: exp-2026-0003-team-capability-mapping
     one_line: Team-level AI capability mapping for engineering leaders.
     notes: >
@@ -83,31 +87,40 @@ products:
     notes: Public CLI and GitHub Action.
 
   - name: ARC Skills
-    repo: aking-beep/arc-skills
+    repo: aking-beep/arc-labs
+    path: resources/skills
     relationship: labs-product
     status: shipped
     repo_confirmed: true
     line: ai-developer-tools
     domain: ai
     one_line: An open library of agent skills (SKILL.md packages) for Claude, Cursor and similar runtimes.
+    notes: &resource_move >
+      Imported into arc-labs with its history on 2026-10-21. Still deployed from its old
+      repository until the Vercel project is repointed (see resources/README.md); archive
+      the old repository only after that.
 
   - name: AI Workflow Templates
-    repo: aking-beep/ai-workflow-templates
+    repo: aking-beep/arc-labs
+    path: resources/workflows
     relationship: labs-product
     status: shipped
     repo_confirmed: true
     line: ai-developer-tools
     domain: ai
     one_line: An open catalog of ready-to-run AI workflows, most of which stop at a human gate.
+    notes: *resource_move
 
   - name: Reference Architectures
-    repo: aking-beep/reference-architectures
+    repo: aking-beep/arc-labs
+    path: resources/architectures
     relationship: labs-product
     status: shipped
     repo_confirmed: true
     line: ai-developer-tools
     domain: emerging-tech
     one_line: An open library of system blueprints, each with its trade-offs and when not to use it.
+    notes: *resource_move
 
   # ── Travel & experiences ────────────────────────────────────────────────
 
@@ -128,6 +141,7 @@ products:
     relationship: labs-technology
     status: building
     repo_confirmed: true
+    target: aking-beep/arc-travel (as the culture-context module)
     line: travel-experiences
     domain: travel
     one_line: Cultural context as a capability, not a standalone product.
@@ -175,17 +189,18 @@ products:
   # ── Experimental learning ───────────────────────────────────────────────
 
   - name: AWS Quest
-    repo: aking-beep/aws-quest
+    repo: aking-beep/arc-labs
+    path: experiments/aws-quest
     relationship: labs-experiment
     status: exploring
     repo_confirmed: true
     line: experimental-learning
     domain: gaming
+    labs_record: exp-2026-0005-aws-quest
     one_line: A pixel-RPG map that turns daily AWS lessons into playable waypoints.
     notes: >
-      Undecided. Either open a record and move it into experiments/gaming/aws-quest as a
-      timeboxed experiment, or declassify it as a personal learning repository and remove
-      this entry.
+      Imported into arc-labs with its history on 2026-10-21 as a timeboxed experiment;
+      aking-beep/aws-quest can be archived.
 
 # Explicitly outside ARC Labs. Here so the boundary is written down rather than assumed.
 boundary:
@@ -226,7 +241,10 @@ boundary:
       Represents both divisions through product pages; never holds their application code.
 
 # Repositories to archive on GitHub (Settings → Danger Zone → Archive this repository).
+# Archive, never delete: old links keep opening.
 archive:
+  - repo: aking-beep/aws-quest
+    reason: Moved into arc-labs/experiments/aws-quest with its history. Nothing deploys from it.
   - repo: aking-beep/arc-agent-governance
     reason: Empty. Agent governance belongs inside arc-control.
   - repo: aking-beep/arc-ai-security-scanner
