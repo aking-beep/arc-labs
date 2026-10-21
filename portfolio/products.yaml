@@ -46,8 +46,9 @@ products:
     one_line: Team-level AI capability mapping for engineering leaders.
     notes: >
       Lives today in aking-beep/ark as apps/business. Target: extracted to sit alongside
-      AI Fit in one AI Fit codebase with its own deployment, keeping its only runtime wire
-      to ARC Control — GET /api/v1/calibration — as an API contract. Whether it graduates
+      AI Fit in one AI Fit codebase with its own deployment, keeping its wires to ARC
+      Control as API contracts: GET /api/v1/calibration, and — in opt-in measure mode —
+      POST /api/v1/events via @ark/runtime. Whether it graduates
       inside AI Fit or as its own product is still the open Gate 5 question in the record.
 
   - name: MCP Conformance Scanner
