@@ -85,22 +85,32 @@ the smallest thing.
 ## Portfolio
 
 Current classification. Registry: [`portfolio/products.yaml`](./portfolio/products.yaml).
+Belonging to ARC Labs as a division does not mean living in this repository — products
+graduate into their own.
 
-| Product | Labs relationship | Code location |
-| --- | --- | --- |
-| CLIMB UP | Labs product | `climb-up` |
-| MIRROSU | Labs product | `mirrosu` |
-| Steady Move | Labs product | `steady-move` |
-| ARC Travel | Labs product | separate ARC Travel repo |
-| Culture Context | Labs technology / ARC Travel component | likely ARC Travel |
-| AI Fit | Labs product | independent or existing repo |
-| AI Fit Teams | Labs commercial experiment | likely alongside AI Fit initially |
-| 1–7 day experiments | Labs experiment | `experiments/` in this repo |
-| **ARC Control** | **Not Labs** | `arc-control` / existing infrastructure repo |
+| Line | Product | Labs relationship | Code location |
+| --- | --- | --- | --- |
+| AI & developer tools | AI Fit | Labs product | `aifit-engine` (a second copy lives in `ark`) |
+| | AI Fit Teams | Labs commercial experiment | `ark/apps/business` — to be extracted alongside AI Fit |
+| | MCP Conformance Scanner | Labs product | `mcp-conformance-scanner` |
+| | Prompt Reviewer | Labs product | `prompt-reviewer` |
+| | Connectivity Scanner | Labs product | `connectivity-scanner` |
+| | ARC Skills | Labs product | `arc-skills` |
+| | AI Workflow Templates | Labs product | `ai-workflow-templates` |
+| | Reference Architectures | Labs product | `reference-architectures` |
+| Travel & experiences | ARC Travel (ARC Stay) | Labs product | `arc-travel` |
+| | Culture Context | Labs technology | `culture-context` — merging into `arc-travel` |
+| Gaming & human performance | CLIMB UP | Labs product | `climb-up` |
+| | Steady Move | Labs product | `steady-move` |
+| | MIRRORSU | Labs product | `v0-voice-note-mood-tracker` |
+| Experimental learning | AWS Quest | Labs experiment | `aws-quest` — move into `experiments/` or declassify |
+| | 1–7 day experiments | Labs experiment | `experiments/` in this repo |
+| **Not Labs** | **ARC Control** | Control | `arc-control` — the one canonical Control repo |
+| | ARK (legacy) | Control + Labs, splitting | `ark` — Control half to `arc-control`, AI Fit halves to AI Fit |
+| | Company website | Corporate | `arc-website` |
 
-Several repository locations are working assumptions rather than confirmed facts — those
-carry `repo_confirmed: false` in the registry. Confirm them rather than letting a guess
-calcify into a record.
+Three empty repositories — `arc-agent-governance`, `arc-ai-security-scanner` and
+`arc-journey-scanner` — are listed under `archive:` in the registry.
 
 ## Documents worth reading in order
 

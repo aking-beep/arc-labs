@@ -2,6 +2,7 @@
 #
 # `products:` is every product that was born in ARC Labs, wherever its code now lives.
 # `boundary:` is what is deliberately NOT Labs, recorded so the line stays legible.
+# `archive:` is repositories that should be archived on GitHub, and why.
 #
 # Companion file `experiments.yaml` is GENERATED from incubator records — do not edit it.
 #
@@ -9,101 +10,225 @@
 # `tools/labs.py validate` fails: a graduation is not complete until the product
 # is registered here.
 #
-# relationship: labs-product | labs-technology | labs-commercial-experiment | not-labs
+# relationship: labs-product | labs-technology | labs-commercial-experiment | labs-experiment | not-labs
 # status:       shipped | building | exploring | planned
+# line:         ai-developer-tools | travel-experiences | gaming-human-performance | experimental-learning
 # repo_confirmed: false means the repository location is a working assumption, not a fact.
 #                 Confirm it and set true; do not let a guess calcify into a record.
+#
+# Repositories last checked against GitHub on 2026-10-21.
 
 products:
+  # ── AI & developer tools ────────────────────────────────────────────────
+
+  - name: AI Fit
+    repo: aking-beep/aifit-engine
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: true
+    line: ai-developer-tools
+    domain: ai
+    one_line: A five-minute quiz that names how you use AI and hands you setup files that fit.
+    notes: >
+      Public name is "Fit"; the repo keeps the aifit-engine slug to avoid confusion with
+      aifitengine.com. A second implementation lives in aking-beep/ark (apps/consumer and
+      my-ai/). Which one is canonical is reviewed in
+      research/ai-agents/2026-10-ai-fit-canonical-code.md.
+
+  - name: AI Fit Teams
+    repo: aking-beep/ark
+    relationship: labs-commercial-experiment
+    status: building
+    repo_confirmed: true
+    line: ai-developer-tools
+    domain: ai
+    labs_record: exp-2026-0003-team-capability-mapping
+    one_line: Team-level AI capability mapping for engineering leaders.
+    notes: >
+      Lives today in aking-beep/ark as apps/business. Target: extracted to sit alongside
+      AI Fit in one AI Fit codebase with its own deployment, keeping its only runtime wire
+      to ARC Control — GET /api/v1/calibration — as an API contract. Whether it graduates
+      inside AI Fit or as its own product is still the open Gate 5 question in the record.
+
+  - name: MCP Conformance Scanner
+    repo: aking-beep/mcp-conformance-scanner
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: true
+    line: ai-developer-tools
+    domain: ai
+    one_line: Scores an MCP server for protocol conformance, auth and security surface, with fixes.
+    notes: >
+      Public scanner, CLI and GitHub Action. Its rules overlap arc-control's
+      packages/mcp-security; keep one rule set and have the other consume it.
+
+  - name: Prompt Reviewer
+    repo: aking-beep/prompt-reviewer
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: true
+    line: ai-developer-tools
+    domain: ai
+    one_line: Static review that says whether a system prompt is ready to ship, and what to rewrite.
+
+  - name: Connectivity Scanner
+    repo: aking-beep/connectivity-scanner
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: true
+    line: ai-developer-tools
+    domain: emerging-tech
+    one_line: Grades an endpoint for reachability, TLS, speed and security headers, with fixes.
+    notes: Public CLI and GitHub Action.
+
+  - name: ARC Skills
+    repo: aking-beep/arc-skills
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: true
+    line: ai-developer-tools
+    domain: ai
+    one_line: An open library of agent skills (SKILL.md packages) for Claude, Cursor and similar runtimes.
+
+  - name: AI Workflow Templates
+    repo: aking-beep/ai-workflow-templates
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: true
+    line: ai-developer-tools
+    domain: ai
+    one_line: An open catalog of ready-to-run AI workflows, most of which stop at a human gate.
+
+  - name: Reference Architectures
+    repo: aking-beep/reference-architectures
+    relationship: labs-product
+    status: shipped
+    repo_confirmed: true
+    line: ai-developer-tools
+    domain: emerging-tech
+    one_line: An open library of system blueprints, each with its trade-offs and when not to use it.
+
+  # ── Travel & experiences ────────────────────────────────────────────────
+
+  - name: ARC Travel
+    repo: aking-beep/arc-travel
+    relationship: labs-product
+    status: building
+    repo_confirmed: true
+    line: travel-experiences
+    domain: travel
+    one_line: ARC Stay — turns a boutique hotel's local knowledge into a catalog guests can book.
+    notes: >
+      The repository is a runnable proof of concept on synthetic data (a fictional hotel in
+      Puerto Escondido), so its status is building, not shipped.
+
+  - name: Culture Context
+    repo: aking-beep/culture-context
+    relationship: labs-technology
+    status: building
+    repo_confirmed: true
+    line: travel-experiences
+    domain: travel
+    one_line: Cultural context as a capability, not a standalone product.
+    notes: >
+      Has its own repository today. Target: merged into aking-beep/arc-travel as a
+      cultural-context module. Archive culture-context only once its functionality and
+      tests are preserved there — parity is reviewed in
+      research/emerging-technology/2026-10-culture-context-into-arc-travel.md.
+
+  # ── Gaming & human performance ──────────────────────────────────────────
+
   - name: CLIMB UP
     repo: aking-beep/climb-up
     relationship: labs-product
     status: shipped
     repo_confirmed: true
+    line: gaming-human-performance
     labs_record: exp-2025-0007-climb-up
-    domain: human-performance
-    one_line: Structured progression for self-coached climbers.
-
-  - name: MIRROSU
-    repo: aking-beep/mirrosu
-    relationship: labs-product
-    status: shipped
-    repo_confirmed: false
-    domain: human-performance
-    one_line: TODO — one sentence a stranger would understand.
-    notes: >
-      Labs product with its own repository. Backfill a record in incubator/graduated/
-      following the pattern in exp-2025-0007-climb-up.md.
+    domain: gaming
+    one_line: A mountaineering strategy game where a careful retreat can outscore a reckless summit.
 
   - name: Steady Move
     repo: aking-beep/steady-move
     relationship: labs-product
     status: shipped
-    repo_confirmed: false
+    repo_confirmed: true
+    line: gaming-human-performance
     domain: human-performance
-    one_line: TODO — one sentence a stranger would understand.
-    notes: >
-      Labs product with its own repository. Record needs backfilling.
+    one_line: An offline-first movement app — check in, get a plan sized to your day, show up.
+    notes: Record needs backfilling in incubator/graduated/.
 
-  - name: ARC Travel
-    repo: aking-beep/arc-travel
+  - name: MIRRORSU
+    repo: aking-beep/v0-voice-note-mood-tracker
     relationship: labs-product
-    status: shipped
-    repo_confirmed: false
-    domain: travel
-    one_line: TODO — one sentence a stranger would understand.
-    notes: >
-      Separate ARC Travel repository. Exact slug unconfirmed — confirm before anything
-      depends on it.
-
-  - name: Culture Context
-    repo: aking-beep/arc-travel
-    relationship: labs-technology
     status: building
-    repo_confirmed: false
-    domain: travel
-    one_line: Cultural context as a capability, not a standalone product.
+    repo_confirmed: true
+    line: gaming-human-performance
+    domain: human-performance
+    one_line: A private, voice-first reflection companion — speak freely, notice patterns over time.
     notes: >
-      Labs technology rather than a Labs product: expected to ship as an ARC Travel
-      component rather than independently. If it acquires its own users and roadmap it
-      becomes a product and needs its own repository and record.
+      Previously registered as aking-beep/mirrosu, which does not exist; the code lives in
+      v0-voice-note-mood-tracker. Separate product from Steady Move — do not merge them.
+      Consider renaming the repository to mirrorsu. Record needs backfilling.
 
-  - name: AI Fit
-    repo: aking-beep/ai-fit
-    relationship: labs-product
-    status: shipped
-    repo_confirmed: false
-    domain: ai
-    one_line: TODO — one sentence a stranger would understand.
-    notes: >
-      Independent or existing repository — unconfirmed which. Resolve before AI Fit Teams
-      graduates, since that decision depends on this one.
+  # ── Experimental learning ───────────────────────────────────────────────
 
-  - name: AI Fit Teams
-    repo: aking-beep/ai-fit
-    relationship: labs-commercial-experiment
-    status: building
-    repo_confirmed: false
-    domain: ai
-    labs_record: exp-2026-0003-team-capability-mapping
-    one_line: Team-level AI capability mapping for engineering leaders.
+  - name: AWS Quest
+    repo: aking-beep/aws-quest
+    relationship: labs-experiment
+    status: exploring
+    repo_confirmed: true
+    line: experimental-learning
+    domain: gaming
+    one_line: A pixel-RPG map that turns daily AWS lessons into playable waypoints.
     notes: >
-      Commercial experiment, expected to sit alongside AI Fit initially. Whether it
-      graduates inside the AI Fit repository or as its own product is an open Gate 5
-      question — see the record.
+      Undecided. Either open a record and move it into experiments/gaming/aws-quest as a
+      timeboxed experiment, or declassify it as a personal learning repository and remove
+      this entry.
 
 # Explicitly outside ARC Labs. Here so the boundary is written down rather than assumed.
 boundary:
   - name: ARC Control
     repo: aking-beep/arc-control
     relationship: not-labs
-    status: shipped
-    repo_confirmed: false
+    status: building
+    repo_confirmed: true
     mandate: >
       ARC Control makes autonomous technology trustworthy enough to operate in the real
       world.
     notes: >
-      Operational infrastructure with reliability obligations to real-world systems.
-      Nothing in Control is an experiment, and Control work does not enter the Labs
-      pipeline. If a question is "can we make this autonomous system trustworthy", it is
-      a Control question. See docs/LABS_CHARTER.md#what-labs-is-not.
+      The one canonical Control repository. Operational infrastructure with reliability
+      obligations to real-world systems. Nothing in Control is an experiment, and Control
+      work does not enter the Labs pipeline. If a question is "can we make this autonomous
+      system trustworthy", it is a Control question. See
+      docs/LABS_CHARTER.md#what-labs-is-not. Which policy engine is canonical is proposed
+      in arc-control docs/adr/0001-canonical-policy-engine.md.
+
+  - name: ARK (legacy monorepo)
+    repo: aking-beep/ark
+    relationship: not-labs
+    status: building
+    repo_confirmed: true
+    notes: >
+      Holds three things that belong in two places. apps/control and the Control packages
+      (guard, protocols, runtime) consolidate into arc-control; apps/consumer + my-ai
+      (AI Fit) and apps/business (AI Fit Teams) move to the AI Fit codebase. Do not port
+      Control code until one canonical policy engine is chosen.
+
+  - name: ARC Transformation Group website
+    repo: aking-beep/arc-website
+    relationship: not-labs
+    status: shipped
+    repo_confirmed: true
+    notes: >
+      Corporate. Marketing, research, consulting and commerce (the paid Playbooks, Paddle).
+      Represents both divisions through product pages; never holds their application code.
+
+# Repositories to archive on GitHub (Settings → Danger Zone → Archive this repository).
+archive:
+  - repo: aking-beep/arc-agent-governance
+    reason: Empty. Agent governance belongs inside arc-control.
+  - repo: aking-beep/arc-ai-security-scanner
+    reason: Empty. Enterprise scanning goes into arc-control when needed.
+  - repo: aking-beep/arc-journey-scanner
+    reason: Empty. Recreate as a Labs experiment if it is ever prioritized.
