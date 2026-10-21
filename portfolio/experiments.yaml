@@ -6,7 +6,7 @@ generated_by: tools/labs.py portfolio
 note: GENERATED FILE - do not edit. Source of truth is incubator/*/*.md
 counts:
   idea: 1
-  experiment: 1
+  experiment: 2
   building: 1
   graduated: 1
   killed: 1
@@ -65,3 +65,13 @@ experiments:
   review_by: '2026-04-21'
   decided_on: '2026-04-21'
   example: true
+- id: exp-2026-0005-aws-quest
+  title: AWS Quest — walking a cloud curriculum as a game map
+  domain: gaming
+  stage: experiment
+  owner: aking
+  opened: '2026-10-21'
+  decision: pending
+  record: incubator/validating/exp-2026-0005-aws-quest.md
+  review_by: '2026-11-04'
+  iterations: 1
