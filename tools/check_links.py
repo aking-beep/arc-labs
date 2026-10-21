@@ -4,6 +4,9 @@
 External URLs are deliberately not checked: a flaky third-party host should never fail
 the pipeline's build. Anchors are stripped — this verifies the file exists, not the heading.
 
+A link starting with `/` inside a web app (any directory with a package.json, such as the
+libraries under resources/) is a site-root URL, so it resolves against that app's public/.
+
     python3 tools/check_links.py
 """
 
@@ -22,19 +25,29 @@ FENCE = re.compile(r"```.*?```", re.DOTALL)
 INLINE_CODE = re.compile(r"`[^`\n]*`")
 
 
+def resolve(path: pathlib.Path, target: str) -> pathlib.Path:
+    if target.startswith("/"):
+        for parent in path.parents:
+            if parent == ROOT:
+                break
+            if (parent / "package.json").exists():
+                return (parent / "public" / target.lstrip("/")).resolve()
+    return (path.parent / target).resolve()
+
+
 def main() -> int:
     broken: list[str] = []
     checked = 0
 
     for path in sorted(ROOT.rglob("*.md")):
-        if ".git" in path.parts:
+        if ".git" in path.parts or "node_modules" in path.parts:
             continue
         text = INLINE_CODE.sub(" ", FENCE.sub(" ", path.read_text()))
         for target in LINK.findall(text):
             if SKIP_SCHEME.match(target):
                 continue
             checked += 1
-            resolved = (path.parent / unquote(target.split("#", 1)[0])).resolve()
+            resolved = resolve(path, unquote(target.split("#", 1)[0]))
             if not resolved.exists():
                 broken.append(f"{path.relative_to(ROOT)} -> {target}")
 
