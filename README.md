@@ -66,6 +66,7 @@ the smallest thing.
 | [`prototypes/`](./prototypes/) | Works end-to-end for a real person. One step past an experiment. |
 | [`research/`](./research/) | Dated, attributed notes. Knowledge that outlives the experiment. |
 | [`portfolio/`](./portfolio/) | `products.yaml` (hand-maintained registry) and `experiments.yaml` (generated). |
+| [`resources/`](./resources/) | Maintained public libraries: skills, workflows, architectures. The [one exception](./docs/LABS_CHARTER.md#the-one-exception-maintained-public-resource-libraries) to "no product source here". |
 | [`shared/`](./shared/) | Leverage: design system, analytics, AI, auth, mobile. Reusable before repeated. |
 | [`templates/`](./templates/) | The paperwork each gate asks for. |
 | [`evals/`](./evals/) | The gates with teeth. Accessibility and security block every graduation. |
@@ -85,22 +86,34 @@ the smallest thing.
 ## Portfolio
 
 Current classification. Registry: [`portfolio/products.yaml`](./portfolio/products.yaml).
+Belonging to ARC Labs as a division does not mean living in this repository — products
+graduate into their own.
 
-| Product | Labs relationship | Code location |
-| --- | --- | --- |
-| CLIMB UP | Labs product | `climb-up` |
-| MIRROSU | Labs product | `mirrosu` |
-| Steady Move | Labs product | `steady-move` |
-| ARC Travel | Labs product | separate ARC Travel repo |
-| Culture Context | Labs technology / ARC Travel component | likely ARC Travel |
-| AI Fit | Labs product | independent or existing repo |
-| AI Fit Teams | Labs commercial experiment | likely alongside AI Fit initially |
-| 1–7 day experiments | Labs experiment | `experiments/` in this repo |
-| **ARC Control** | **Not Labs** | `arc-control` / existing infrastructure repo |
+| Line | Product | Labs relationship | Code location |
+| --- | --- | --- | --- |
+| AI & developer tools | AI Fit | Labs product | `aifit-engine` (a second copy lives in `ark`) |
+| | AI Fit Teams | Labs commercial experiment | `ark/apps/business` — moving to `aifit-engine/apps/teams` |
+| | MCP Conformance Scanner | Labs product | `mcp-conformance-scanner` |
+| | Prompt Reviewer | Labs product | `prompt-reviewer` |
+| | Connectivity Scanner | Labs product | `connectivity-scanner` |
+| | ARC Skills | Labs resource library | [`resources/skills`](./resources/skills/) in this repo |
+| | AI Workflow Templates | Labs resource library | [`resources/workflows`](./resources/workflows/) in this repo |
+| | Reference Architectures | Labs resource library | [`resources/architectures`](./resources/architectures/) in this repo |
+| Travel & experiences | ARC Travel (ARC Stay) | Labs product | `arc-travel` |
+| | Culture Context | Labs technology | `culture-context` — moving into `arc-travel` as a module |
+| Gaming & human performance | CLIMB UP | Labs product | `climb-up` |
+| | Steady Move | Labs product | `steady-move` |
+| | MIRRORSU | Labs product | `v0-voice-note-mood-tracker` |
+| Experimental learning | AWS Quest | Labs experiment | [`experiments/aws-quest`](./experiments/aws-quest/) in this repo |
+| | 1–7 day experiments | Labs experiment | `experiments/` in this repo |
+| **Not Labs** | **ARC Control** | Control | `arc-control` — the one canonical Control repo |
+| | ARK (legacy) | Control + Labs, splitting | `ark` — Control half to `arc-control`, AI Fit halves to AI Fit |
+| | Company website | Corporate | `arc-website` |
 
-Several repository locations are working assumptions rather than confirmed facts — those
-carry `repo_confirmed: false` in the registry. Confirm them rather than letting a guess
-calcify into a record.
+Repositories to archive — the three empty ones (`arc-agent-governance`,
+`arc-ai-security-scanner`, `arc-journey-scanner`) and `aws-quest`, now imported here — are
+listed under `archive:` in the registry. The three resource libraries' old repositories are
+archived only once their deployments run from [`resources/`](./resources/).
 
 ## Documents worth reading in order
 

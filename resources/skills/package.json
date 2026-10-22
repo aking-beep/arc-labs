@@ -1,0 +1,34 @@
+{
+  "name": "arc-skills",
+  "version": "0.2.0",
+  "private": true,
+  "description": "ARC Skills — a free, open library of production-ready Agent Skills (SKILL.md). Browse, copy, and drop them into Claude, Cursor, or any agent runtime.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "tsx cli/snapshot.ts",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "catalog": "tsx cli/catalog.ts",
+    "validate": "tsx cli/validate.ts",
+    "snapshot": "tsx cli/snapshot.ts"
+  },
+  "dependencies": {
+    "next": "^15.5.21",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.10",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "autoprefixer": "10.4.19",
+    "postcss": "8.4.39",
+    "tailwindcss": "3.4.6",
+    "tsx": "4.16.2",
+    "typescript": "5.5.3"
+  }
+}

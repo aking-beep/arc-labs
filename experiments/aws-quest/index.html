@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Quest — Andrew's Cloud Journey</title>
+<style>
+  :root{
+    --navy:#232F3E; --orange:#FF9900; --blue:#1A73E8; --green:#2E7D32;
+    --purple:#7B2CBF; --paper:#0d1420; --ink:#e8eef7;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);
+    font-family:"Courier New",monospace;overflow:hidden;}
+  #wrap{display:flex;flex-direction:column;align-items:center;height:100%;gap:8px;padding:10px;}
+  #hud{width:100%;max-width:900px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    justify-content:space-between;background:var(--navy);border:3px solid var(--orange);
+    border-radius:6px;padding:8px 12px;font-size:13px;}
+  #hud .stat{display:flex;gap:6px;align-items:center;white-space:nowrap;}
+  #hud b{color:var(--orange);}
+  #badges{display:flex;gap:4px;flex-wrap:wrap;}
+  .badge{width:20px;height:20px;border-radius:3px;border:1px solid #000;
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:#fff;}
+  #stage{position:relative;width:100%;max-width:900px;aspect-ratio:5/3;
+    border:3px solid var(--orange);border-radius:6px;overflow:hidden;background:#000;}
+  canvas{width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges;}
+  #hint{width:100%;max-width:900px;text-align:center;font-size:12px;color:#9fb0c8;min-height:16px;}
+  /* Overlays */
+  .overlay{position:absolute;inset:0;background:rgba(9,15,28,.94);display:flex;
+    align-items:center;justify-content:center;padding:16px;z-index:10;}
+  .panel{background:var(--navy);border:3px solid var(--orange);border-radius:8px;
+    max-width:560px;width:100%;padding:18px 20px;max-height:100%;overflow:auto;}
+  .panel h1{color:var(--orange);font-size:22px;margin:0 0 6px;}
+  .panel h2{color:var(--orange);font-size:17px;margin:0 0 4px;}
+  .panel .meta{font-size:11px;color:#9fb0c8;margin-bottom:10px;}
+  .panel p{font-size:13px;line-height:1.5;}
+  .tag{display:inline-block;font-size:10px;font-weight:bold;padding:2px 7px;border-radius:10px;
+    color:#fff;margin-right:5px;}
+  .choice{display:block;width:100%;text-align:left;background:#16202e;color:var(--ink);
+    border:2px solid #33465c;border-radius:6px;padding:10px 12px;margin:7px 0;font-size:13px;
+    font-family:inherit;cursor:pointer;transition:.12s;}
+  .choice:hover{border-color:var(--orange);background:#1d2a3b;}
+  .choice.correct{border-color:var(--green);background:#12351b;}
+  .choice.wrong{border-color:#c0392b;background:#3a1512;}
+  .mac{background:#111a26;border-left:4px solid var(--orange);padding:9px 11px;margin:11px 0;
+    font-size:12px;font-style:italic;color:#d7e2f0;}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .btn{background:var(--orange);color:var(--navy);border:none;border-radius:6px;padding:9px 14px;
+    font-weight:bold;font-family:inherit;font-size:13px;cursor:pointer;}
+  .btn.sec{background:transparent;color:var(--orange);border:2px solid var(--orange);}
+  .btn.blue{background:var(--blue);color:#fff;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  a.linkbtn{text-decoration:none;}
+  .center{text-align:center;}
+  .small{font-size:11px;color:#9fb0c8;}
+  kbd{background:#0e1622;border:1px solid #33465c;border-radius:4px;padding:1px 6px;font-size:11px;}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="hud">
+    <div class="stat">🧭 <b id="hLevel">Lv 1</b></div>
+    <div class="stat">⭐ XP <b id="hXP">0</b></div>
+    <div class="stat">🔥 Streak <b id="hStreak">0</b></div>
+    <div class="stat">🏆 <b id="hProg">0/8</b></div>
+    <div class="stat">🎖️ <span id="badges"></span></div>
+  </div>
+  <div id="stage">
+    <canvas id="cv" width="500" height="300"></canvas>
+    <!-- Title overlay -->
+    <div class="overlay" id="titleOv">
+      <div class="panel center">
+        <h1>☁️ AWS QUEST</h1>
+        <p class="small">Andrew's Cloud Journey — a playable map of the daily lessons</p>
+        <p style="font-size:13px;line-height:1.6">
+          You are an apprentice Cloud Architect. Cross the land — <b>Streaming Coast</b>,
+          <b>Query Canyon</b>, the <b>Governance Keep</b> — and reach the <b>Audit Citadel</b>.
+          Each waypoint is a real lesson. Make the right architecture call to earn its artifact.
+        </p>
+        <p class="small">Move: <kbd>← ↑ ↓ →</kbd> or <kbd>W A S D</kbd> &nbsp;·&nbsp; Enter a glowing waypoint to begin.</p>
+        <div class="btnrow" style="justify-content:center">
+          <button class="btn" onclick="startGame()">▶ Start Quest</button>
+        </div>
+        <p class="small" style="margin-top:10px">Prototype v1 · 8 lessons wired in (L066–L073). Built to extend in Cursor.</p>
+      </div>
+    </div>
+    <!-- Lesson overlay -->
+    <div class="overlay" id="lessonOv" style="display:none"><div class="panel" id="lessonPanel"></div></div>
+    <!-- Win overlay -->
+    <div class="overlay" id="winOv" style="display:none">
+      <div class="panel center">
+        <h1>🏰 CITADEL CLEARED</h1>
+        <p style="font-size:14px">You forged all <b id="winCount">8</b> artifacts and completed the Data Engineering arc.</p>
+        <p class="mac">"That's the whole chain — ingest, transform, query, orchestrate, prove. You didn't memorize it, you <b>walked</b> it. Come back when the next lesson drops; the map grows with you." — Mac</p>
+        <p class="small">Final XP: <b id="winXP">0</b> · Best streak: <b id="winStreak">0</b></p>
+        <div class="btnrow" style="justify-content:center">
+          <button class="btn sec" onclick="resetGame()">↻ Replay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="hint">Press <kbd>Start Quest</kbd> to begin.</div>
+</div>
+
+<script>
+/* ============================================================
+   AWS QUEST — single-file prototype
+   Data-driven from Andrew's real daily lessons (L066–L073).
+   To add a lesson: push a new object into LESSONS with a
+   world x/y, region color, scenario + choices, and links.
+   ============================================================ */
+
+// ---- File links to the real lesson docs (Google Drive, computer:// scheme) ----
+const DRIVE = "computer:///Users/andrewking/Library/CloudStorage/GoogleDrive-aking%40arctransformationgroup.com/My%20Drive/Claude%20Scheduled%20Outputs/mac-daily-lesson/";
+const CO = q => "https://www.coursera.org/search?query=" + encodeURIComponent(q);
+
+const REGIONS = {
+  coast:  {name:"Streaming Coast", sky:"#0b2a3a", ground:"#11455c"},
+  canyon: {name:"Query Canyon",    sky:"#3a2410", ground:"#6b4423"},
+  keep:   {name:"Governance Keep", sky:"#1a1030", ground:"#2e1b52"},
+  citadel:{name:"Audit Citadel",   sky:"#2a0d0d", ground:"#4a1414"},
+};
+
+const LESSONS = [
+  {
+    id:"L066", region:"coast", x:260, y:210, color:"#1A73E8", depth:2,
+    title:"Kinesis Data Streams",
+    macIntro:"Meridian Outdoor pipes ~9,000 events/sec through one vendor webhook. Marketing, analytics AND data-science all need that same feed — and DS must reprocess the last 5 days every time it retrains a model. What carries it?",
+    choices:[
+      {t:"One SQS queue the teams share", correct:false,
+       fb:"A queue deletes on consume — one reader, no replay. The moment DS needs to reprocess history, it's gone."},
+      {t:"Kinesis Data Stream (7-day retention, key=sessionId)", correct:true,
+       fb:"Right. A stream retains + replays; many consumers each re-read the same tape independently. Replay is the boundary that a queue can't cross."},
+      {t:"SNS → SQS fan-out", correct:false,
+       fb:"Fan-out gives each team a copy, but still no replay — SQS drops on consume, so the 5-day retrain reprocess breaks."},
+    ],
+    artifact:"📼 Replay Tape",
+    doc:"Lesson_066_2026-08-31_Kinesis_Data_Streams_Streaming_Ingestion.docx",
+    course:CO("AWS Kinesis data streaming"),
+  },
+  {
+    id:"L067", region:"coast", x:560, y:150, color:"#1A73E8", depth:2,
+    title:"Stream Transformation",
+    macIntro:"Same stream, three transforms at once. The hard one: a rolling 5-minute per-user checkout count that must flag '3 failed payments in a row.' Which tool owns that?",
+    choices:[
+      {t:"Lambda consumer + DynamoDB TTL counters", correct:false,
+       fb:"That's re-inventing a stream processor by hand — it breaks on late / out-of-order records and miscounts under load."},
+      {t:"Amazon Data Firehose transform", correct:false,
+       fb:"Firehose is stateless delivery — great for no-code Parquet-to-S3, but it can't hold a time window."},
+      {t:"Managed Service for Apache Flink", correct:true,
+       fb:"Yes. Needs MEMORY of earlier records + a TIME WINDOW → Flink. Stateful, event-time, windowed, exactly-once."},
+    ],
+    artifact:"🌊 Windowed Lens",
+    doc:"Lesson_067_2026-09-01_Stream_Transformation_Lambda_Firehose_Flink.docx",
+    course:CO("Apache Flink stream processing AWS"),
+  },
+  {
+    id:"L068", region:"canyon", x:860, y:210, color:"#FF9900", depth:2,
+    title:"Querying the Data Lake",
+    macIntro:"The CMO wants a dashboard: 150 concurrent viewers, sub-second, always on. The analysts run rare, bursty ad-hoc SQL. For the always-on dashboard, which engine?",
+    choices:[
+      {t:"Athena over the Glue Data Catalog", correct:false,
+       fb:"Athena is pay-per-scan, perfect for the analysts' bursty work — but a 150-user always-on dashboard blows up the bill and hits concurrency limits."},
+      {t:"Redshift Serverless", correct:true,
+       fb:"Correct. Always-on + high-concurrency + sub-second → a warehouse that bills on up-time. Match the engine to the access pattern."},
+      {t:"A bigger EC2 instance running the DB", correct:false,
+       fb:"Serverless analytics has no node to size up — that's the wrong mental model entirely."},
+    ],
+    artifact:"🔍 Query Compass",
+    doc:"Lesson_068_2026-09-02_Querying_The_Data_Lake_Athena_Glue_Vs_Redshift.docx",
+    course:CO("AWS Athena Redshift analytics"),
+  },
+  {
+    id:"L069", region:"canyon", x:1160, y:150, color:"#FF9900", depth:2,
+    title:"Pipeline Orchestration",
+    macIntro:"Your Glue jobs need to run in order, with retry and a catch-on-failure that alerts. Mostly AWS-native services, and the team wants the least ops overhead. What orchestrates it?",
+    choices:[
+      {t:"A cron job on an EC2 box", correct:false,
+       fb:"Now you own a server, its patching, and its silent failures. That's more ops, not less."},
+      {t:"Step Functions", correct:true,
+       fb:"Right. Native, serverless, built-in Retry/Catch, low ops — the default for AWS-native pipelines."},
+      {t:"MWAA (Managed Airflow)", correct:false,
+       fb:"MWAA earns its keep for complex Python DAGs and cross-tool orchestration — overkill (and standing cost) for a native retry/catch flow."},
+    ],
+    artifact:"🧭 Conductor's Baton",
+    doc:"Lesson_069_2026-09-03_Pipeline_Orchestration_Step_Functions_Vs_MWAA_Vs_Glue.docx",
+    course:CO("AWS Step Functions orchestration"),
+  },
+  {
+    id:"L070", region:"keep", x:1460, y:210, color:"#2E7D32", depth:2,
+    title:"Data Quality & Observability",
+    macIntro:"A vendor quietly renamed sessionId → session_id. 41% of your session keys go null. Every pipeline stays GREEN. It runs silently broken for 9 days. What stops the next one?",
+    choices:[
+      {t:"Trust the green runs — they passed", correct:false,
+       fb:"A flawless green run can still publish garbage. 'It ran' is not 'it's correct.'"},
+      {t:"A Glue Data Quality ruleset as a gate", correct:true,
+       fb:"Yes. Completeness/Freshness rules score the OUTPUT and fail the run when the null rate spikes — a state feeding your Step Functions catch."},
+      {t:"A manual weekly spot-check", correct:false,
+       fb:"Nine days of damage before a human looks. Quality has to be an automated gate, not a calendar reminder."},
+    ],
+    artifact:"✅ Truth Seal",
+    doc:"Lesson_070_2026-09-04_Data_Quality_And_Observability_Glue_Data_Quality.docx",
+    course:CO("AWS Glue data quality"),
+  },
+  {
+    id:"L071", region:"keep", x:1760, y:150, color:"#2E7D32", depth:2,
+    title:"Lake Formation Governance",
+    macIntro:"order_total and region sit in the SAME Parquet file as customer_email and card_last4. Every Athena-capable role can SELECT the card + email columns. Marketing only needs the non-sensitive ones. Fix it.",
+    choices:[
+      {t:"Duplicate the data into a split bucket", correct:false,
+       fb:"Weeks of re-plumbing, and it still can't do EU row-level filtering. Moving data is the wrong lever."},
+      {t:"An S3 bucket policy", correct:false,
+       fb:"S3/IAM is object-level — all-or-nothing on the file. It has no concept of a column."},
+      {t:"Lake Formation column grant (+ revoke IAMAllowedPrincipals)", correct:true,
+       fb:"Right. Register the location, revoke the IAM pass-through, grant marketing the 3 safe columns. The PCI fix is ONE column-scoped grant, zero data movement."},
+    ],
+    artifact:"🔐 Column Ward",
+    doc:"Lesson_071_2026-09-07_Data_Governance_Lake_Formation_Fine_Grained_Access.docx",
+    course:CO("AWS Lake Formation access control"),
+  },
+  {
+    id:"L072", region:"keep", x:2060, y:210, color:"#7B2CBF", depth:2,
+    title:"Data Lineage & Access Auditing",
+    macIntro:"The auditor asks you to prove who ACTUALLY READ which PHI columns — at the lowest cost. Which record do you reach for?",
+    choices:[
+      {t:"Hand over the Lake Formation grants page", correct:false,
+       fb:"Grants prove who MAY read — not who DID. Different artifact for a different question."},
+      {t:"lakeformation:GetDataAccess (free management event)", correct:true,
+       fb:"Yes. LF must call GetDataAccess to vend column-scoped creds on every read — principal + table + columns + queryId, free, already flowing. Enforcement and audit are the same event."},
+      {t:"Enable S3 GetObject data events", correct:false,
+       fb:"Paid, opt-in, and it proves bytes moved but never NAMES the cleared columns. Wrong layer for a column-access question."},
+    ],
+    artifact:"📜 Access Ledger",
+    doc:"Lesson_072_2026-09-08_Data_Lineage_And_Access_Auditing.docx",
+    course:CO("AWS CloudTrail data access audit"),
+  },
+  {
+    id:"L073", region:"citadel", x:2360, y:170, color:"#c0392b", depth:3, boss:true,
+    title:"⚔️ BOSS — Durable Audit at Scale",
+    macIntro:"The Citadel gate. The payer's HIPAA clause demands EVERY PHI-column access for the trailing 12 months — queryable and tamper-evident — in 5 business days. CloudTrail Event history only holds 90 days. Forge the Evidence Pack.",
+    choices:[
+      {t:"Increase Event history retention to 12 months", correct:false,
+       fb:"Impossible — Event history is a FIXED 90-day rolling window. This is the trap answer with a timer on it."},
+      {t:"CloudTrail Trail → S3 + partition-projection Athena table + log-file validation", correct:true,
+       fb:"That's the Evidence Pack. Trail makes it durable, S3 Lifecycle sets retention, log-file validation makes it tamper-evident, and a partition-filtered Athena query makes it cheap. Citadel cleared."},
+      {t:"Tell the auditor it can't be done", correct:false,
+       fb:"It absolutely can — for single-digit dollars a month. Never surrender the Citadel."},
+    ],
+    artifact:"🏰 Evidence Pack",
+    doc:"Lesson_073_2026-09-09_Durable_Audit_At_Scale_The_Evidence_Pack.docx",
+    course:CO("AWS CloudTrail Athena audit logging"),
+  },
+];
+
+// ---------- State ----------
+const S = {
+  started:false, xp:0, level:1, streak:0, bestStreak:0,
+  cleared:{}, // id -> true
+  px:120, py:170, dir:"right", walkFrame:0, walkTick:0,
+  cam:0, activeLesson:null, keys:{},
+};
+const WORLD_W = 2560, WORLD_H = 300;
+const VIEW_W = 500, VIEW_H = 300;
+const SPEED = 2.4, PR = 9; // player radius-ish
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+ctx.imageSmoothingEnabled = false;
+
+// ---------- Persistence (safe: works locally, degrades in preview) ----------
+function save(){ try{ localStorage.setItem("awsquest_v1", JSON.stringify({
+  xp:S.xp,level:S.level,bestStreak:S.bestStreak,cleared:S.cleared})); }catch(e){} }
+function load(){ try{ const d=JSON.parse(localStorage.getItem("awsquest_v1")||"null");
+  if(d){ S.xp=d.xp||0;S.level=d.level||1;S.bestStreak=d.bestStreak||0;S.cleared=d.cleared||{}; } }catch(e){} }
+load();
+
+// ---------- Input ----------
+addEventListener("keydown", e=>{
+  const k=e.key.toLowerCase();
+  if(["arrowup","arrowdown","arrowleft","arrowright"," "].includes(e.key.toLowerCase())) e.preventDefault();
+  S.keys[k]=true;
+  if((k==="enter"||k===" ") && S.started && !S.activeLesson){ tryEnter(); }
+});
+addEventListener("keyup", e=>{ S.keys[e.key.toLowerCase()]=false; });
+
+// touch: tap to move toward point
+cv.addEventListener("pointerdown", e=>{
+  if(!S.started||S.activeLesson) return;
+  const r=cv.getBoundingClientRect();
+  const tx = (e.clientX-r.left)/r.width*VIEW_W + S.cam;
+  const ty = (e.clientY-r.top)/r.height*VIEW_H;
+  S.touchTarget={x:tx,y:ty};
+});
+
+function startGame(){ document.getElementById("titleOv").style.display="none"; S.started=true; hint(); }
+function resetGame(){ S.xp=0;S.level=1;S.streak=0;S.bestStreak=0;S.cleared={};S.px=120;S.py=170;
+  save(); document.getElementById("winOv").style.display="none"; updateHUD(); }
+
+// ---------- Lesson interaction ----------
+function nearestNode(){
+  let best=null,bd=1e9;
+  for(const L of LESSONS){ const d=Math.hypot(L.x-S.px,L.y-S.py); if(d<bd){bd=d;best=L;} }
+  return {node:best,dist:bd};
+}
+function tryEnter(){
+  const {node,dist}=nearestNode();
+  if(node && dist<26) openLesson(node);
+}
+function openLesson(L){
+  S.activeLesson=L;
+  const done=!!S.cleared[L.id];
+  const rc = {coast:"#1A73E8",canyon:"#FF9900",keep:"#7B2CBF",citadel:"#c0392b"}[L.region];
+  const p=document.getElementById("lessonPanel");
+  p.innerHTML = `
+    <h1>${L.title}</h1>
+    <div class="meta">
+      <span class="tag" style="background:${rc}">${REGIONS[L.region].name}</span>
+      <span class="tag" style="background:${L.boss?'#c0392b':'#4a5b70'}">${L.id} · Depth ${L.depth}</span>
+      ${done?'<span class="tag" style="background:#2E7D32">✔ Cleared</span>':''}
+    </div>
+    <div class="mac">🎓 Professor Mac: ${L.macIntro}</div>
+    <div id="choices"></div>
+    <div id="result"></div>
+    <div class="btnrow">
+      <a class="linkbtn" href="${DRIVE+L.doc}"><button class="btn blue">📖 Open the real lesson</button></a>
+      <a class="linkbtn" href="${L.course}" target="_blank" rel="noopener"><button class="btn sec">🎓 Coursera</button></a>
+      <button class="btn sec" onclick="closeLesson()">✕ Leave</button>
+    </div>`;
+  const cbox=p.querySelector("#choices");
+  L.choices.forEach((c,i)=>{
+    const b=document.createElement("button");
+    b.className="choice"; b.textContent=String.fromCharCode(65+i)+".  "+c.t;
+    b.onclick=()=>pick(L,c,b);
+    cbox.appendChild(b);
+  });
+  document.getElementById("lessonOv").style.display="flex";
+}
+function pick(L,c,btn){
+  const already=!!S.cleared[L.id];
+  const res=document.getElementById("result");
+  if(c.correct){
+    btn.classList.add("correct");
+    res.innerHTML=`<div class="mac" style="border-color:#2E7D32">✅ ${c.fb}</div>`;
+    if(!already){
+      const gain = L.boss?200:100;
+      S.xp+=gain; S.streak++; S.bestStreak=Math.max(S.bestStreak,S.streak);
+      S.cleared[L.id]=true;
+      while(S.xp >= S.level*250){ S.level++; }
+      res.innerHTML += `<p class="center" style="color:var(--orange)"><b>+${gain} XP</b> · Artifact forged: ${L.artifact}</p>`;
+      save(); updateHUD();
+      if(Object.keys(S.cleared).length>=LESSONS.length) setTimeout(showWin,700);
+    }
+    // disable choices
+    document.querySelectorAll("#choices .choice").forEach(x=>x.disabled=true);
+  } else {
+    btn.classList.add("wrong");
+    S.streak=0; save(); updateHUD();
+    res.innerHTML=`<div class="mac" style="border-color:#c0392b">❌ ${c.fb} <br><b>Try again.</b></div>`;
+  }
+}
+function closeLesson(){ document.getElementById("lessonOv").style.display="none"; S.activeLesson=null;
+  // nudge player off the node so they don't re-trigger instantly
+  S.px -= 30; hint(); }
+
+function showWin(){
+  document.getElementById("winCount").textContent=LESSONS.length;
+  document.getElementById("winXP").textContent=S.xp;
+  document.getElementById("winStreak").textContent=S.bestStreak;
+  document.getElementById("winOv").style.display="flex";
+}
+
+// ---------- HUD ----------
+function updateHUD(){
+  document.getElementById("hLevel").textContent="Lv "+S.level;
+  document.getElementById("hXP").textContent=S.xp;
+  document.getElementById("hStreak").textContent=S.streak;
+  document.getElementById("hProg").textContent=Object.keys(S.cleared).length+"/"+LESSONS.length;
+  const bd=document.getElementById("badges"); bd.innerHTML="";
+  LESSONS.forEach(L=>{
+    const b=document.createElement("span"); b.className="badge";
+    const done=!!S.cleared[L.id];
+    b.style.background=done?({coast:"#1A73E8",canyon:"#FF9900",keep:"#7B2CBF",citadel:"#c0392b"}[L.region]):"#2a3546";
+    b.textContent=done?"★":"·"; b.title=L.id+" "+L.title+(done?" ✔":"");
+    bd.appendChild(b);
+  });
+}
+function hint(){
+  const {node,dist}=nearestNode();
+  const el=document.getElementById("hint");
+  if(node && dist<26) el.innerHTML=`Press <kbd>Enter</kbd> to enter <b>${node.id} — ${node.title}</b>`;
+  else el.innerHTML=`Walk to a glowing waypoint · <kbd>← ↑ ↓ →</kbd>/<kbd>WASD</kbd> to move`;
+}
+
+// ---------- Rendering ----------
+function regionAt(x){
+  if(x<720) return "coast";
+  if(x<1320) return "canyon";
+  if(x<2220) return "keep";
+  return "citadel";
+}
+function drawBg(){
+  // draw region bands across the visible slice
+  for(let sx=0; sx<VIEW_W; sx+=4){
+    const wx = sx + S.cam;
+    const reg = REGIONS[regionAt(wx)];
+    ctx.fillStyle=reg.sky; ctx.fillRect(sx,0,4,170);
+    ctx.fillStyle=reg.ground; ctx.fillRect(sx,170,4,VIEW_H-170);
+  }
+  // pixel decorations per region (cheap, seeded by world x)
+  for(let wx=Math.floor(S.cam/40)*40; wx<S.cam+VIEW_W+40; wx+=40){
+    const sx=wx-S.cam; const r=regionAt(wx);
+    if(r==="coast"){ // waves
+      ctx.fillStyle="#2a6f8f"; ctx.fillRect(sx+6,150,10,3); ctx.fillRect(sx+22,158,10,3);
+    } else if(r==="canyon"){ // rocks
+      ctx.fillStyle="#8a5a2b"; ctx.fillRect(sx+8,150,14,20); ctx.fillStyle="#5c3a17"; ctx.fillRect(sx+8,150,14,4);
+    } else if(r==="keep"){ // pillars
+      ctx.fillStyle="#432a6e"; ctx.fillRect(sx+10,120,8,50); ctx.fillStyle="#5a3a90"; ctx.fillRect(sx+9,116,10,5);
+    } else { // citadel spikes
+      ctx.fillStyle="#6a1c1c"; ctx.fillRect(sx+12,110,10,60); ctx.fillStyle="#3a0d0d"; ctx.beginPath();
+      ctx.moveTo(sx+12,110);ctx.lineTo(sx+17,98);ctx.lineTo(sx+22,110);ctx.fill();
+    }
+  }
+  // path
+  ctx.fillStyle="rgba(255,215,140,.22)";
+  ctx.fillRect(0,182,VIEW_W,16);
+}
+function drawNode(L){
+  const sx=L.x-S.cam, sy=L.y;
+  if(sx<-40||sx>VIEW_W+40) return;
+  const done=!!S.cleared[L.id];
+  const t=performance.now()/300;
+  const glow = 5+Math.sin(t + L.x)*2;
+  // glow ring
+  ctx.fillStyle = done ? "rgba(46,125,50,.35)" : (L.boss?"rgba(192,57,58,.4)":"rgba(255,153,0,.35)");
+  ctx.beginPath(); ctx.arc(sx,sy,14+glow,0,7); ctx.fill();
+  // banner post
+  ctx.fillStyle="#3a2c18"; ctx.fillRect(sx-2,sy-2,4,22);
+  // flag
+  ctx.fillStyle = done?"#2E7D32":L.color;
+  ctx.fillRect(sx+2,sy-14,16,11);
+  ctx.fillStyle="#fff"; ctx.font="7px monospace"; ctx.fillText(done?"✔":L.id.slice(1), sx+3, sy-6);
+  if(L.boss){ ctx.fillStyle="#ffd27f"; ctx.font="9px monospace"; ctx.fillText("⚔", sx-4, sy+2); }
+}
+function drawPlayer(){
+  const sx=Math.round(S.px-S.cam), sy=Math.round(S.py);
+  const bob = (S.moving? Math.sin(S.walkFrame)*1 : 0);
+  // shadow
+  ctx.fillStyle="rgba(0,0,0,.35)"; ctx.beginPath(); ctx.ellipse(sx,sy+11,8,3,0,0,7); ctx.fill();
+  // body (little cloud-knight)
+  ctx.fillStyle="#e8eef7"; ctx.fillRect(sx-5,sy-2+bob,10,9);       // tunic
+  ctx.fillStyle="#FF9900"; ctx.fillRect(sx-5,sy+3+bob,10,2);        // belt
+  ctx.fillStyle="#f2c9a0"; ctx.fillRect(sx-4,sy-10+bob,8,8);        // head
+  ctx.fillStyle="#232F3E"; ctx.fillRect(sx-4,sy-12+bob,8,3);        // hair/helm
+  // eyes look by dir
+  ctx.fillStyle="#232F3E";
+  const ex = S.dir==="left"?-3:(S.dir==="right"?1:-1);
+  ctx.fillRect(sx+ex,sy-7+bob,2,2);
+  // legs
+  ctx.fillStyle="#33465c";
+  const step=S.moving?Math.sin(S.walkFrame)*2:0;
+  ctx.fillRect(sx-4,sy+7+bob,3,4+step); ctx.fillRect(sx+1,sy+7+bob,3,4-step);
+}
+function render(){
+  ctx.clearRect(0,0,VIEW_W,VIEW_H);
+  drawBg();
+  LESSONS.forEach(drawNode);
+  drawPlayer();
+  // region label
+  ctx.fillStyle="rgba(0,0,0,.5)"; ctx.fillRect(0,0,VIEW_W,16);
+  ctx.fillStyle="#ffd27f"; ctx.font="bold 10px monospace";
+  ctx.fillText("▸ "+REGIONS[regionAt(S.px)].name, 8, 11);
+}
+
+// ---------- Loop ----------
+function step(){
+  if(S.started && !S.activeLesson){
+    let dx=0,dy=0;
+    if(S.keys["arrowleft"]||S.keys["a"]) dx-=1;
+    if(S.keys["arrowright"]||S.keys["d"]) dx+=1;
+    if(S.keys["arrowup"]||S.keys["w"]) dy-=1;
+    if(S.keys["arrowdown"]||S.keys["s"]) dy+=1;
+    if(S.touchTarget){
+      const tdx=S.touchTarget.x-S.px, tdy=S.touchTarget.y-S.py;
+      if(Math.hypot(tdx,tdy)>4){ dx=tdx; dy=tdy; } else S.touchTarget=null;
+    }
+    const mag=Math.hypot(dx,dy);
+    S.moving = mag>0.1;
+    if(S.moving){
+      dx/=mag; dy/=mag;
+      S.px+=dx*SPEED; S.py+=dy*SPEED;
+      if(Math.abs(dx)>Math.abs(dy)) S.dir = dx<0?"left":"right";
+      S.walkFrame+=0.35;
+      // auto-enter when arriving on a node
+      const {node,dist}=nearestNode();
+      if(node && dist<16 && !S.autoLock){ S.autoLock=true; openLesson(node); }
+      if(dist>22) S.autoLock=false;
+    }
+    // bounds
+    S.px=Math.max(20,Math.min(WORLD_W-20,S.px));
+    S.py=Math.max(120,Math.min(VIEW_H-20,S.py));
+    // camera
+    S.cam = Math.max(0, Math.min(WORLD_W-VIEW_W, S.px-VIEW_W/2));
+    hint();
+  }
+  render();
+  requestAnimationFrame(step);
+}
+updateHUD();
+requestAnimationFrame(step);
+</script>
+</body>
+</html>
