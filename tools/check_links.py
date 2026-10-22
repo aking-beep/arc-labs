@@ -4,8 +4,8 @@
 External URLs are deliberately not checked: a flaky third-party host should never fail
 the pipeline's build. Anchors are stripped — this verifies the file exists, not the heading.
 
-A link starting with `/` inside a web app (any directory with a package.json, such as the
-libraries under resources/) is a site-root URL, so it resolves against that app's public/.
+A link starting with `/` inside a web app (any directory with a package.json) is a site-root
+URL, so it resolves against that app's public/.
 
     python3 tools/check_links.py
 """

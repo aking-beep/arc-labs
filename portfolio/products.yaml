@@ -38,23 +38,6 @@ products:
       my-ai/). Which one is canonical is reviewed in
       research/ai-agents/2026-10-ai-fit-canonical-code.md.
 
-  - name: AI Fit Teams
-    repo: aking-beep/ark
-    relationship: labs-commercial-experiment
-    status: building
-    repo_confirmed: true
-    line: ai-developer-tools
-    domain: ai
-    target: aking-beep/aifit-engine (apps/teams) — code moved with history on branch ccr-43214af8-s2xe1c, not yet merged or deployed
-    labs_record: exp-2026-0003-team-capability-mapping
-    one_line: Team-level AI capability mapping for engineering leaders.
-    notes: >
-      Lives today in aking-beep/ark as apps/business. Target: extracted to sit alongside
-      AI Fit in one AI Fit codebase with its own deployment, keeping its wires to ARC
-      Control as API contracts: GET /api/v1/calibration, and — in opt-in measure mode —
-      POST /api/v1/events via @ark/runtime. Whether it graduates
-      inside AI Fit or as its own product is still the open Gate 5 question in the record.
-
   - name: MCP Conformance Scanner
     repo: aking-beep/mcp-conformance-scanner
     relationship: labs-product
@@ -86,42 +69,6 @@ products:
     one_line: Grades an endpoint for reachability, TLS, speed and security headers, with fixes.
     notes: Public CLI and GitHub Action.
 
-  - name: ARC Skills
-    repo: aking-beep/arc-labs
-    path: resources/skills
-    relationship: labs-product
-    status: shipped
-    repo_confirmed: true
-    line: ai-developer-tools
-    domain: ai
-    one_line: An open library of agent skills (SKILL.md packages) for Claude, Cursor and similar runtimes.
-    notes: &resource_move >
-      Imported into arc-labs with its history on 2026-10-21. Still deployed from its old
-      repository until the Vercel project is repointed (see resources/README.md); archive
-      the old repository only after that.
-
-  - name: AI Workflow Templates
-    repo: aking-beep/arc-labs
-    path: resources/workflows
-    relationship: labs-product
-    status: shipped
-    repo_confirmed: true
-    line: ai-developer-tools
-    domain: ai
-    one_line: An open catalog of ready-to-run AI workflows, most of which stop at a human gate.
-    notes: *resource_move
-
-  - name: Reference Architectures
-    repo: aking-beep/arc-labs
-    path: resources/architectures
-    relationship: labs-product
-    status: shipped
-    repo_confirmed: true
-    line: ai-developer-tools
-    domain: emerging-tech
-    one_line: An open library of system blueprints, each with its trade-offs and when not to use it.
-    notes: *resource_move
-
   # ── Travel & experiences ────────────────────────────────────────────────
 
   - name: ARC Travel
@@ -137,19 +84,19 @@ products:
       Puerto Escondido), so its status is building, not shipped.
 
   - name: Culture Context
-    repo: aking-beep/culture-context
+    repo: aking-beep/arc-travel
+    path: src/modules/culture-context
     relationship: labs-technology
     status: building
     repo_confirmed: true
-    target: aking-beep/arc-travel (src/modules/culture-context) — ported on branch ccr-43214af8-s2xe1c, ADR-024, not yet merged
     line: travel-experiences
     domain: travel
     one_line: Cultural context as a capability, not a standalone product.
     notes: >
-      Has its own repository today. Target: merged into aking-beep/arc-travel as a
-      cultural-context module. Archive culture-context only once its functionality and
-      tests are preserved there — parity is reviewed in
-      research/emerging-technology/2026-10-culture-context-into-arc-travel.md.
+      Merged into arc-travel as a module on 2026-10-22 (ADR-024 there), with its tests
+      ported; the parity review is
+      research/emerging-technology/2026-10-culture-context-into-arc-travel.md. The original
+      aking-beep/culture-context repository is on the archive list.
 
   # ── Gaming & human performance ──────────────────────────────────────────
 
@@ -217,8 +164,42 @@ boundary:
       obligations to real-world systems. Nothing in Control is an experiment, and Control
       work does not enter the Labs pipeline. If a question is "can we make this autonomous
       system trustworthy", it is a Control question. See
-      docs/LABS_CHARTER.md#what-labs-is-not. Which policy engine is canonical is proposed
-      in arc-control docs/adr/0001-canonical-policy-engine.md.
+      docs/LABS_CHARTER.md#what-labs-is-not. Its policy engine is the canonical one
+      (arc-control docs/adr/0001-canonical-policy-engine.md, accepted). The division's own
+      list of repositories is arc-control docs/PORTFOLIO.md.
+
+  - name: AI Fit Teams
+    repo: aking-beep/aifit-engine
+    path: apps/teams
+    relationship: not-labs
+    status: building
+    repo_confirmed: true
+    notes: >
+      An ARC Control product: team-level AI capability mapping for engineering leaders,
+      calibrated by Control's GET /api/v1/calibration. Its code lives in aifit-engine (a
+      Labs repository) beside AI Fit, with its own deployment. Vercel still deploys it from
+      aking-beep/ark until the project is repointed to apps/teams here.
+
+  - name: ARC Skills
+    repo: aking-beep/arc-skills
+    relationship: not-labs
+    status: shipped
+    repo_confirmed: true
+    notes: An ARC Control product. An open library of agent skills (SKILL.md packages).
+
+  - name: AI Workflow Templates
+    repo: aking-beep/ai-workflow-templates
+    relationship: not-labs
+    status: shipped
+    repo_confirmed: true
+    notes: An ARC Control product. An open catalog of AI workflows, most stopping at a human gate.
+
+  - name: Reference Architectures
+    repo: aking-beep/reference-architectures
+    relationship: not-labs
+    status: shipped
+    repo_confirmed: true
+    notes: An ARC Control product. An open library of system blueprints and their trade-offs.
 
   - name: ARK (legacy monorepo)
     repo: aking-beep/ark
@@ -226,10 +207,10 @@ boundary:
     status: building
     repo_confirmed: true
     notes: >
-      Holds three things that belong in two places. apps/control and the Control packages
-      (guard, protocols, runtime) consolidate into arc-control; apps/consumer + my-ai
-      (AI Fit) and apps/business (AI Fit Teams) move to the AI Fit codebase. Do not port
-      Control code until one canonical policy engine is chosen.
+      Legacy, migrating. apps/control and the Control packages (guard, protocols, runtime)
+      consolidate into arc-control under ADR-0001 steps 2–11. AI Fit Teams is already in
+      aifit-engine/apps/teams; remove apps/business from ark once Vercel deploys it from
+      there. Archive ark when nothing deploys from it.
 
   - name: ARC Transformation Group website
     repo: aking-beep/arc-website
@@ -243,6 +224,8 @@ boundary:
 # Repositories to archive on GitHub (Settings → Danger Zone → Archive this repository).
 # Archive, never delete: old links keep opening.
 archive:
+  - repo: aking-beep/culture-context
+    reason: Merged into arc-travel as src/modules/culture-context. Nothing deploys from it.
   - repo: aking-beep/aws-quest
     reason: Moved into arc-labs/experiments/aws-quest with its history. Nothing deploys from it.
   - repo: aking-beep/arc-agent-governance
