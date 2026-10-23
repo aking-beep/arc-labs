@@ -92,8 +92,6 @@ graduate into their own.
 | --- | --- | --- | --- |
 | AI & developer tools | AI Fit | Labs product | `aifit-engine` (a second copy lives in `ark`) |
 | | MCP Conformance Scanner | Labs product | `mcp-conformance-scanner` |
-| | Prompt Reviewer | Labs product | `prompt-reviewer` |
-| | Connectivity Scanner | Labs product | `connectivity-scanner` |
 | Travel & experiences | ARC Travel (ARC Stay) | Labs product | `arc-travel` |
 | | Culture Context | Labs technology | `arc-travel` (`src/modules/culture-context`) |
 | Gaming & human performance | CLIMB UP | Labs product | `climb-up` |
@@ -106,6 +104,8 @@ graduate into their own.
 | | ARC Skills | Control product | `arc-skills` |
 | | AI Workflow Templates | Control product | `ai-workflow-templates` |
 | | Reference Architectures | Control product | `reference-architectures` |
+| | Prompt Reviewer | Control product | `prompt-reviewer` |
+| | Connectivity Scanner | Control product | `connectivity-scanner` |
 | | ARK (legacy) | Control + Labs, splitting | `ark` — Control half to `arc-control`, AI Fit halves to AI Fit |
 | | Company website | Corporate | `arc-website` |
 
