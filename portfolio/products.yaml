@@ -50,25 +50,6 @@ products:
       Public scanner, CLI and GitHub Action. Its rules overlap arc-control's
       packages/mcp-security; keep one rule set and have the other consume it.
 
-  - name: Prompt Reviewer
-    repo: aking-beep/prompt-reviewer
-    relationship: labs-product
-    status: shipped
-    repo_confirmed: true
-    line: ai-developer-tools
-    domain: ai
-    one_line: Static review that says whether a system prompt is ready to ship, and what to rewrite.
-
-  - name: Connectivity Scanner
-    repo: aking-beep/connectivity-scanner
-    relationship: labs-product
-    status: shipped
-    repo_confirmed: true
-    line: ai-developer-tools
-    domain: emerging-tech
-    one_line: Grades an endpoint for reachability, TLS, speed and security headers, with fixes.
-    notes: Public CLI and GitHub Action.
-
   # ── Travel & experiences ────────────────────────────────────────────────
 
   - name: ARC Travel
@@ -200,6 +181,20 @@ boundary:
     status: shipped
     repo_confirmed: true
     notes: An ARC Control product. An open library of system blueprints and their trade-offs.
+
+  - name: Prompt Reviewer
+    repo: aking-beep/prompt-reviewer
+    relationship: not-labs
+    status: shipped
+    repo_confirmed: true
+    notes: An ARC Control product. Static review that says whether a system prompt is ready to ship.
+
+  - name: Connectivity Scanner
+    repo: aking-beep/connectivity-scanner
+    relationship: not-labs
+    status: shipped
+    repo_confirmed: true
+    notes: An ARC Control product. Grades an endpoint for reachability, TLS, speed and security headers.
 
   - name: ARK (legacy monorepo)
     repo: aking-beep/ark
