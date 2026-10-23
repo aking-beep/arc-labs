@@ -1,16 +1,19 @@
 # ARC portfolio registry — hand-maintained.
 #
-# `products:` is every product that was born in ARC Labs, wherever its code now lives.
+# `products:` is every ARC Labs product, wherever its code now lives.
+# `independent:` is products born in Labs that are now standalone ARC product lines.
 # `boundary:` is what is deliberately NOT Labs, recorded so the line stays legible.
 # `archive:` is repositories that should be archived on GitHub, and why.
 #
 # Companion file `experiments.yaml` is GENERATED from incubator records — do not edit it.
 #
-# A Labs record with `graduated_to: <repo>` must match a `repo` below, or
+# A Labs record with `graduated_to: <repo>` must match a `repo` under products: or
+# independent:, or
 # `tools/labs.py validate` fails: a graduation is not complete until the product
 # is registered here.
 #
-# relationship: labs-product | labs-technology | labs-commercial-experiment | labs-experiment | not-labs
+# relationship: labs-product | labs-technology | labs-commercial-experiment | labs-experiment |
+#               independent-product | independent-technology | not-labs
 # status:       shipped | building | exploring | planned
 # line:         ai-developer-tools | travel-experiences | gaming-human-performance | experimental-learning
 # path:         where inside `repo` the code lives, when it is not the repository root.
@@ -50,70 +53,6 @@ products:
       Public scanner, CLI and GitHub Action. Its rules overlap arc-control's
       packages/mcp-security; keep one rule set and have the other consume it.
 
-  # ── Travel & experiences ────────────────────────────────────────────────
-
-  - name: ARC Travel
-    repo: aking-beep/arc-travel
-    relationship: labs-product
-    status: building
-    repo_confirmed: true
-    line: travel-experiences
-    domain: travel
-    one_line: ARC Stay — turns a boutique hotel's local knowledge into a catalog guests can book.
-    notes: >
-      The repository is a runnable proof of concept on synthetic data (a fictional hotel in
-      Puerto Escondido), so its status is building, not shipped.
-
-  - name: Culture Context
-    repo: aking-beep/arc-travel
-    path: src/modules/culture-context
-    relationship: labs-technology
-    status: building
-    repo_confirmed: true
-    line: travel-experiences
-    domain: travel
-    one_line: Cultural context as a capability, not a standalone product.
-    notes: >
-      Merged into arc-travel as a module on 2026-10-22 (ADR-024 there), with its tests
-      ported; the parity review is
-      research/emerging-technology/2026-10-culture-context-into-arc-travel.md. The original
-      aking-beep/culture-context repository is on the archive list.
-
-  # ── Gaming & human performance ──────────────────────────────────────────
-
-  - name: CLIMB UP
-    repo: aking-beep/climb-up
-    relationship: labs-product
-    status: shipped
-    repo_confirmed: true
-    line: gaming-human-performance
-    labs_record: exp-2025-0007-climb-up
-    domain: gaming
-    one_line: A mountaineering strategy game where a careful retreat can outscore a reckless summit.
-
-  - name: Steady Move
-    repo: aking-beep/steady-move
-    relationship: labs-product
-    status: shipped
-    repo_confirmed: true
-    line: gaming-human-performance
-    domain: human-performance
-    one_line: An offline-first movement app — check in, get a plan sized to your day, show up.
-    notes: Record needs backfilling in incubator/graduated/.
-
-  - name: MIRRORSU
-    repo: aking-beep/v0-voice-note-mood-tracker
-    relationship: labs-product
-    status: building
-    repo_confirmed: true
-    line: gaming-human-performance
-    domain: human-performance
-    one_line: A private, voice-first reflection companion — speak freely, notice patterns over time.
-    notes: >
-      Previously registered as aking-beep/mirrosu, which does not exist; the code lives in
-      v0-voice-note-mood-tracker. Separate product from Steady Move — do not merge them.
-      Consider renaming the repository to mirrorsu. Record needs backfilling.
-
   # ── Experimental learning ───────────────────────────────────────────────
 
   - name: AWS Quest
@@ -129,6 +68,74 @@ products:
     notes: >
       Imported into arc-labs with its history on 2026-10-21 as a timeboxed experiment;
       aking-beep/aws-quest can be archived.
+
+# Independent ARC products. Born in ARC Labs, now standalone product lines: each has its own
+# repository, roadmap and release cadence, and is expected to grow into its own business.
+# Neither ARC Labs nor ARC Control. A Labs record may graduate into one of these.
+independent:
+  # ── Travel & experiences ────────────────────────────────────────────────
+
+  - name: ARC Travel
+    repo: aking-beep/arc-travel
+    relationship: independent-product
+    status: building
+    repo_confirmed: true
+    line: travel-experiences
+    domain: travel
+    one_line: ARC Stay — turns a boutique hotel's local knowledge into a catalog guests can book.
+    notes: >
+      The repository is a runnable proof of concept on synthetic data (a fictional hotel in
+      Puerto Escondido), so its status is building, not shipped.
+
+  - name: Culture Context
+    repo: aking-beep/arc-travel
+    path: src/modules/culture-context
+    relationship: independent-technology
+    status: building
+    repo_confirmed: true
+    line: travel-experiences
+    domain: travel
+    one_line: Cultural context as a capability, not a standalone product.
+    notes: >
+      Merged into arc-travel as a module on 2026-10-22 (ADR-024 there), with its tests
+      ported; the parity review is
+      research/emerging-technology/2026-10-culture-context-into-arc-travel.md. The original
+      aking-beep/culture-context repository is on the archive list.
+
+  # ── Gaming & human performance ──────────────────────────────────────────
+
+  - name: CLIMB UP
+    repo: aking-beep/climb-up
+    relationship: independent-product
+    status: shipped
+    repo_confirmed: true
+    line: gaming-human-performance
+    labs_record: exp-2025-0007-climb-up
+    domain: gaming
+    one_line: A mountaineering strategy game where a careful retreat can outscore a reckless summit.
+
+  - name: Steady Move
+    repo: aking-beep/steady-move
+    relationship: independent-product
+    status: shipped
+    repo_confirmed: true
+    line: gaming-human-performance
+    domain: human-performance
+    one_line: An offline-first movement app — check in, get a plan sized to your day, show up.
+    notes: Record needs backfilling in incubator/graduated/.
+
+  - name: MIRRORSU
+    repo: aking-beep/v0-voice-note-mood-tracker
+    relationship: independent-product
+    status: building
+    repo_confirmed: true
+    line: gaming-human-performance
+    domain: human-performance
+    one_line: A private, voice-first reflection companion — speak freely, notice patterns over time.
+    notes: >
+      Previously registered as aking-beep/mirrosu, which does not exist; the code lives in
+      v0-voice-note-mood-tracker. Separate product from Steady Move — do not merge them.
+      Consider renaming the repository to mirrorsu. Record needs backfilling.
 
 # Explicitly outside ARC Labs. Here so the boundary is written down rather than assumed.
 boundary:
