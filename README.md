@@ -88,17 +88,20 @@ Current classification. Registry: [`portfolio/products.yaml`](./portfolio/produc
 Belonging to ARC Labs as a division does not mean living in this repository — products
 graduate into their own.
 
+**Independent** products started in Labs and are now standalone ARC product lines, each with
+its own repository, roadmap and release cadence. They belong to neither Labs nor Control.
+
 | Line | Product | Labs relationship | Code location |
 | --- | --- | --- | --- |
 | AI & developer tools | AI Fit | Labs product | `aifit-engine` (a second copy lives in `ark`) |
 | | MCP Conformance Scanner | Labs product | `mcp-conformance-scanner` |
-| Travel & experiences | ARC Travel (ARC Stay) | Labs product | `arc-travel` |
-| | Culture Context | Labs technology | `arc-travel` (`src/modules/culture-context`) |
-| Gaming & human performance | CLIMB UP | Labs product | `climb-up` |
-| | Steady Move | Labs product | `steady-move` |
-| | MIRRORSU | Labs product | `v0-voice-note-mood-tracker` |
 | Experimental learning | AWS Quest | Labs experiment | [`experiments/aws-quest`](./experiments/aws-quest/) in this repo |
 | | 1–7 day experiments | Labs experiment | `experiments/` in this repo |
+| **Independent** | ARC Travel (ARC Stay) | Independent product, born in Labs | `arc-travel` |
+| | Culture Context | Part of ARC Travel | `arc-travel` (`src/modules/culture-context`) |
+| | CLIMB UP | Independent product, born in Labs | `climb-up` |
+| | Steady Move | Independent product, born in Labs | `steady-move` |
+| | MIRRORSU | Independent product, born in Labs | `v0-voice-note-mood-tracker` |
 | **Not Labs** | **ARC Control** | Control | `arc-control` — the one canonical Control repo |
 | | AI Fit Teams | Control product | `aifit-engine/apps/teams` |
 | | ARC Skills | Control product | `arc-skills` |

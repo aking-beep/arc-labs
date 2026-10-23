@@ -306,12 +306,13 @@ def check_links(rec: Record, products: dict, report: Report) -> None:
 
     repo = rec.meta.get("graduated_to")
     if repo:
-        known = {p.get("repo") for p in products.get("products", []) or []}
+        listed = (products.get("products") or []) + (products.get("independent") or [])
+        known = {p.get("repo") for p in listed}
         if repo not in known:
             report.error(
                 where,
                 f"graduated_to {repo!r} is not listed in portfolio/products.yaml — "
-                f"graduation is not complete until the product is registered",
+                f"graduation is not complete until the product is registered under products: or independent:",
             )
 
 
@@ -357,7 +358,7 @@ def check_index(records: list[Record], report: Report) -> None:
 
 def check_products(products: dict, records: list[Record], report: Report) -> None:
     where = "portfolio/products.yaml"
-    entries = products.get("products") or []
+    entries = (products.get("products") or []) + (products.get("independent") or [])
     by_id = {r.id: r for r in records}
     for entry in entries:
         for key in ("name", "repo", "relationship", "status"):
