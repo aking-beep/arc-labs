@@ -19,7 +19,7 @@ reliable enough to exist at scale.**
 An R&D operating system. A pipeline with a defined entry point, defined stages, defined
 evidence, and — most importantly — a defined **exit**.
 
-Labs holds five things:
+Labs holds four things:
 
 | Holding | Meaning |
 | --- | --- |
@@ -27,7 +27,6 @@ Labs holds five things:
 | **Work** | The smallest buildable thing that tests a record. Lives in `experiments/` and `prototypes/`. |
 | **Knowledge** | What we learned, whether or not it shipped. Lives in `research/` and in killed records. |
 | **Leverage** | Reusable infrastructure that makes the next experiment faster. Lives in `shared/`, `templates/`, `evals/`. |
-| **Resources** | Maintained public libraries of reusable knowledge. Lives in `resources/` — see [the exception](#the-one-exception-maintained-public-resource-libraries). |
 
 ## What Labs is not
 
@@ -46,18 +45,6 @@ Specifically, Labs does not hold:
 - Customer data, credentials, or anything bound by a customer agreement
 - Infrastructure that something else depends on at runtime
 - Work with no owner and no review date
-
-### The one exception: maintained public resource libraries
-
-`resources/` holds ARC's free, public resource libraries — skills, workflow templates and
-reference architectures. They are reusable knowledge first and applications second, so
-they live here, each still built and deployed independently from its own directory, with
-its own lockfile, and checked in CI.
-
-The exception is narrow on purpose. A library qualifies only if it is free, public and
-mostly content. Anything that acquires paying customers, an SLA, or other systems that
-depend on it at runtime graduates into its own repository like any other product. An
-independently deployed application that is not a resource library never lives here.
 
 ## The incubation model
 
